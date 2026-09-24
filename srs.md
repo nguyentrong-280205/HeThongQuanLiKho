@@ -3,9 +3,11 @@
 
 > **Nguồn nghiệp vụ:** Tài liệu “Đặc tả UseCase Hệ thống kho Final(1).docx”.  
 > **Mẫu cấu trúc:** `srs.md` của dự án CAB System trong repository `23669941_NguyenDinhTrong_Cabsystem`.  
-> **Lưu ý số hiệu:** Tài liệu nguồn hiện có UC01–UC27, UC29 và UC30; không có heading UC28. File này giữ nguyên số hiệu đó để không tự tạo nghiệp vụ không có trong đặc tả.
+> **Phiên bản cập nhật nghiệp vụ:** Tài liệu này đã được đồng bộ theo luồng nghiệp vụ được nhóm chốt sau khi rà soát đặc tả gốc.
 >
-> **Ghi chú:** Các phần Business Context, BR, Data Model và NFR được hệ thống hóa/suy ra từ các Use Case để hoàn thiện cấu trúc SRS. Khi có khác biệt, đặc tả Use Case gốc là nguồn nghiệp vụ ưu tiên.
+> **Các thay đổi nghiệp vụ chính:** (1) phân công xưởng được thực hiện ngay trong UC02 – Lập kế hoạch sản xuất, không còn là Use Case độc lập; (2) **UC04 được sử dụng cho Kiểm tra chất lượng thành phẩm** trước khi điều phối nhập kho thành phẩm; (3) sau khi KHSX được duyệt, hệ thống tự động đối chiếu nhu cầu nguyên liệu với tồn khả dụng và chỉ phát sinh nhu cầu mua phần còn thiếu; (4) không tách UC Tiếp nhận giao hàng – QC nguyên liệu trực tiếp tiếp nhận và kiểm tra khi NCC giao hàng; (5) hàng trả về là nhánh sau giao hàng; (6) kiểm kê là quy trình định kỳ chạy song song với luồng vận hành chính.
+>
+> **Ghi chú:** Các phần Business Context, BR, Data Model và NFR được hệ thống hóa từ đặc tả gốc và quyết định nghiệp vụ mới đã chốt.
 
 ---
 
@@ -13,7 +15,7 @@ Bước 1: xác định ngữ cảnh
 
 # 1. Xác định ngữ cảnh (Business Context)
 
-Nhà máy có nhu cầu quản lý xuyên suốt luồng vật tư và thành phẩm từ đơn hàng khách hàng, lập kế hoạch sản xuất, mua nguyên liệu, kiểm tra chất lượng, nhập/xuất kho, cấp nguyên liệu cho xưởng, nhập thành phẩm sau sản xuất, giao hàng, xử lý hàng trả về, kiểm kê và điều chỉnh tồn kho.
+Nhà máy có nhu cầu quản lý xuyên suốt luồng từ khách hàng đặt hàng, lập và duyệt kế hoạch sản xuất có phân công xưởng, tự động đối chiếu nhu cầu nguyên liệu với tồn kho, mua nguyên liệu khi thiếu, QC nguyên liệu tại thời điểm nhà cung cấp giao hàng, điều phối nhập/xuất, cấp nguyên liệu cho xưởng, sản xuất, QC thành phẩm, nhập thành phẩm, xuất giao khách, xử lý hàng trả về, đồng thời thực hiện kiểm kê định kỳ và điều chỉnh tồn kho khi được phê duyệt.
 
 Hệ thống quản lý kho cần bảo đảm mọi biến động tồn kho phát sinh từ nghiệp vụ/chứng từ hợp lệ, quản lý theo lô và vị trí lưu trữ, hỗ trợ FIFO/FEFO, kiểm soát chất lượng, điều phối kho và cung cấp khả năng tra cứu, báo cáo, cảnh báo. Mục tiêu là giảm thao tác thủ công, tăng khả năng truy vết và bảo đảm số liệu tồn kho nhất quán giữa thực tế và hệ thống.
 
@@ -30,11 +32,13 @@ Hệ thống cần lưu mã lô, ngày sản xuất/nhập, hạn sử dụng, s
 ## 2.3. Điều phối nhập/xuất cần dựa trên sức chứa và lô phù hợp
 Hệ thống cần xác định kho/khu vực phù hợp khi nhập và gợi ý lô theo FIFO/FEFO khi xuất.
 
-## 2.4. Quy trình sản xuất phụ thuộc nguyên liệu, năng lực và phê duyệt
-Kế hoạch sản xuất cần được kiểm tra khả thi, phê duyệt và phân công xưởng trước khi triển khai.
+## 2.4. Kế hoạch sản xuất cần gắn xưởng và tự động xác định thiếu nguyên liệu
 
-## 2.5. Chất lượng hàng cần được kiểm soát trước khi nhập lại kho
-Nguyên liệu và hàng trả về phải qua QC theo luồng đặc tả.
+Kế hoạch sản xuất phải được lập theo đơn hàng, bao gồm xưởng thực hiện, sản phẩm, số lượng, thời gian và nhu cầu nguyên liệu. Sau khi Ban giám đốc duyệt, hệ thống phải tự động đối chiếu nhu cầu nguyên liệu với tồn khả dụng; chỉ phần thiếu mới được chuyển thành nhu cầu mua.
+
+## 2.5. Chất lượng nguyên liệu và thành phẩm cần được kiểm soát trước khi nhập kho
+
+Nguyên liệu được QC trực tiếp khi nhà cung cấp giao đến kho; biên bản QC phải tách rõ số lượng đạt và không đạt, phần không đạt được trả nhà cung cấp và không được cộng tồn. Thành phẩm sau sản xuất phải qua QC thành phẩm; chỉ số lượng đạt mới được điều phối và nhập kho thành phẩm.
 
 ## 2.6. Chênh lệch kiểm kê cần kiểm soát và phê duyệt
 Hệ thống phải ghi nhận nguyên nhân, phương án xử lý và chỉ cập nhật tồn sau phê duyệt khi cần.
@@ -86,39 +90,43 @@ Bước 3: xác định Business Goals
 Bước 4: xác định Scope
 
 ## 4. Scope – Phạm vi hệ thống
-
 ### 4.1. In Scope
 
 1. Đăng nhập và phân quyền theo vai trò.
-2. Đặt đơn hàng thành phẩm.
-3. Lập, duyệt kế hoạch sản xuất và phân công xưởng.
-4. Lập/duyệt đơn mua nguyên liệu.
-5. Kiểm tra chất lượng nguyên liệu.
-6. Điều phối nhập kho và xuất kho.
-7. Nhập kho nguyên liệu, thành phẩm và hàng trả về.
-8. Lập yêu cầu xuất nguyên liệu và xuất nguyên liệu theo lệnh sản xuất.
-9. Xuất thành phẩm theo đơn hàng.
-10. Quản lý nguyên liệu, thành phẩm, lô, kho và vị trí lưu kho.
-11. Kiểm tra, nhập lại hoặc xử lý hàng trả về/hàng lỗi.
-12. Kiểm kê, xử lý chênh lệch và phê duyệt điều chỉnh tồn.
-13. Tra cứu dữ liệu kho.
-14. Thống kê, báo cáo và cảnh báo kho.
+2. Khách hàng đặt đơn hàng thành phẩm.
+3. Lập kế hoạch sản xuất theo đơn hàng, trong đó **chọn/phân công xưởng ngay trong kế hoạch**.
+4. Ban giám đốc duyệt, từ chối hoặc yêu cầu điều chỉnh KHSX.
+5. Sau khi KHSX được duyệt, hệ thống **tự động đối chiếu nhu cầu nguyên liệu với tồn khả dụng**; nếu đủ/dư thì không mua, nếu thiếu thì gửi nhu cầu thiếu cho Bộ phận mua hàng.
+6. Lập và duyệt Đơn mua nguyên liệu cho đúng phần còn thiếu.
+7. Nhà cung cấp giao nguyên liệu vật lý đến kho; Bộ phận QC trực tiếp tiếp nhận, đối chiếu PO và kiểm tra chất lượng. Không tách Use Case Tiếp nhận giao hàng.
+8. Lập Biên bản QC nguyên liệu, ghi rõ tổng giao, số lượng đạt, số lượng không đạt; phần không đạt được trả NCC và không nhập tồn.
+9. Điều phối nhập kho và nhập kho nguyên liệu đạt QC.
+10. Xưởng lập Phiếu yêu cầu xuất kho nguyên liệu; Quản lý kho điều phối lô theo FIFO/FEFO; Nhân viên kho xuất và hệ thống trừ tồn.
+11. Xưởng sản xuất theo KHSX đã duyệt.
+12. Xưởng lập Phiếu yêu cầu nhập kho thành phẩm sau khi sản xuất hoàn thành.
+13. **UC04 – Kiểm tra chất lượng thành phẩm**: QC kiểm tra và lập biên bản; số lượng đạt được chuyển điều phối nhập kho, số lượng không đạt chuyển xử lý hàng lỗi.
+14. Điều phối và nhập kho thành phẩm đạt QC; cập nhật tồn, lô và vị trí.
+15. Đến ngày giao hàng trên Đơn hàng, Quản lý kho điều phối xuất thành phẩm theo đơn hàng/lô; Nhân viên kho lập phiếu xuất và giao khách.
+16. Xử lý hàng khách trả về: QC → đạt thì điều phối/nhập lại kho, không đạt thì xử lý hàng lỗi/trả về.
+17. Kiểm kê kho theo lịch định kỳ hoặc yêu cầu quản lý; xử lý chênh lệch và chỉ điều chỉnh tồn sau khi BGĐ phê duyệt.
+18. Quản lý nguyên liệu, thành phẩm, lô, kho, khu vực/vị trí lưu trữ.
+19. Tra cứu dữ liệu kho, thống kê, báo cáo và cảnh báo.
 
 ### 4.2. System Boundary
 
-Luồng nghiệp vụ chính:
+**Luồng nghiệp vụ chính:**
 
-**Khách hàng đặt hàng → Lập kế hoạch sản xuất → Duyệt kế hoạch → Phân công xưởng → Mua/QC/Nhập nguyên liệu → Yêu cầu & xuất nguyên liệu → Sản xuất → Yêu cầu & nhập thành phẩm → Xuất thành phẩm giao hàng.**
+Khách hàng đặt hàng → Lập KHSX + phân công xưởng → BGĐ duyệt → Hệ thống tự động đối chiếu nhu cầu NL với tồn khả dụng → nếu thiếu: mua NL → BGĐ duyệt PO → NCC giao hàng → QC nguyên liệu → điều phối/nhập NL → Xưởng yêu cầu xuất NL → điều phối/xuất NL → sản xuất → yêu cầu nhập TP → QC thành phẩm → điều phối/nhập TP → đến ngày giao hàng: điều phối/xuất TP theo Đơn hàng → giao khách → nếu phát sinh trả hàng: QC hàng trả → nhập lại hoặc xử lý hàng lỗi.
 
-Các luồng kiểm soát song song gồm **điều phối nhập/xuất**, **quản lý lô/vị trí**, **hàng trả về**, **kiểm kê & điều chỉnh tồn**, **tra cứu/báo cáo/cảnh báo**.
+**Quy trình song song:** kiểm kê định kỳ → lập biên bản → xử lý chênh lệch → đề nghị điều chỉnh (nếu cần) → BGĐ phê duyệt → cập nhật tồn. Quản lý danh mục/lô/vị trí và tra cứu/báo cáo/cảnh báo chạy xuyên suốt.
 
-### 4.3. Out of Scope / Chưa được đặc tả rõ trong tài liệu nguồn
+### 4.3. Out of Scope / Không tách thành Use Case độc lập
 
-- Kế toán tài chính, hóa đơn và thanh toán.
-- Quản lý vận tải/giao hàng sau khi đã xuất kho.
-- Cổng nhà cung cấp bên ngoài.
-- Tối ưu tuyến đường vận chuyển.
-- Các chức năng không xuất hiện trong 29 Use Case của tài liệu nguồn.
+* Kế toán tài chính, hóa đơn và thanh toán.
+* Quản lý vận tải/tối ưu tuyến đường sau khi hàng đã xuất kho.
+* Cổng nhà cung cấp bên ngoài.
+* **Tiếp nhận giao hàng** không phải UC riêng: NCC đưa hàng đến kho và Bộ phận QC trực tiếp tiếp nhận, đối chiếu và kiểm tra trong UC29.
+* Hoạt động gia công/sản xuất chi tiết bên trong xưởng không thuộc phạm vi quản lý kho; hệ thống chỉ quản lý đầu vào nguyên liệu, kết quả thành phẩm và chứng từ liên quan.
 
 ---
 
@@ -129,17 +137,18 @@ Bước 5: Business Requirements
 | Mã | Tên Business Requirement | Diễn giải |
 |---|---|---|
 | BR01 | Xác thực và phân quyền | Người dùng chỉ được truy cập chức năng phù hợp với tài khoản, vai trò và quyền được cấp. |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | Hệ thống hỗ trợ đơn hàng, lập/duyệt kế hoạch sản xuất và phân công xưởng. |
-| BR03 | Mua và kiểm tra nguyên liệu | Hệ thống hỗ trợ lập/duyệt đơn mua và QC nguyên liệu trước khi nhập kho. |
-| BR04 | Điều phối nhập/xuất kho | Hệ thống xác định kho, khu vực và lô phù hợp trước khi nhân viên kho thực hiện nhập/xuất. |
-| BR05 | Quản lý nhập kho | Mọi nhập kho nguyên liệu, thành phẩm và hàng trả về phải có căn cứ nghiệp vụ/chứng từ và cập nhật tồn, lô, vị trí. |
-| BR06 | Quản lý xuất kho | Xuất nguyên liệu/thành phẩm phải theo yêu cầu/đơn hàng hợp lệ và cập nhật tồn theo lô. |
-| BR07 | Quản lý lô và hạn sử dụng | Hệ thống quản lý lô nguyên liệu/thành phẩm, ngày sản xuất, hạn dùng và hỗ trợ FIFO/FEFO. |
-| BR08 | Kiểm kê và điều chỉnh tồn kho | Hệ thống hỗ trợ kiểm kê, ghi nhận chênh lệch, xử lý và phê duyệt điều chỉnh tồn. |
-| BR09 | Quản lý hàng trả về/hàng lỗi | Hàng trả về phải được QC và được nhập lại hoặc xử lý theo kết quả. |
-| BR10 | Quản lý danh mục và dữ liệu kho | Hệ thống quản lý nguyên liệu, thành phẩm, lô, kho và vị trí lưu trữ. |
-| BR11 | Tra cứu, báo cáo và cảnh báo | Hệ thống cung cấp tra cứu, báo cáo tồn/nhập/xuất/hiệu suất và cảnh báo kho. |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | Tồn kho phải được cập nhật từ nghiệp vụ/chứng từ hợp lệ, không chỉnh trực tiếp ngoài quy trình phê duyệt. |
+| BR02 | Đơn hàng và KHSX tích hợp phân công xưởng | KHSX phải được lập theo đơn hàng và chứa xưởng thực hiện, sản phẩm, số lượng, thời gian, nhu cầu nguyên liệu trước khi gửi BGĐ duyệt. |
+| BR03 | Tự động đối chiếu nhu cầu nguyên liệu | Sau khi KHSX được duyệt, hệ thống tự động tính phần thiếu = max(0, nhu cầu theo KHSX − tồn khả dụng); chỉ phần thiếu được gửi Bộ phận mua hàng. |
+| BR04 | Mua và QC nguyên liệu | Bộ phận mua hàng lập PO cho phần thiếu, BGĐ duyệt; khi NCC giao hàng, QC trực tiếp kiểm tra và lập biên bản ghi rõ số đạt/không đạt; phần không đạt trả NCC. |
+| BR05 | Điều phối nhập/xuất kho | Quản lý kho xác định kho, khu vực/vị trí và lô phù hợp trước khi Nhân viên kho nhập/xuất. |
+| BR06 | Quản lý nhập kho | Chỉ nguyên liệu/thành phẩm/hàng trả đủ điều kiện QC mới được nhập; hệ thống cập nhật tồn, lô và vị trí sau phiếu nhập hợp lệ. |
+| BR07 | Cấp nguyên liệu sản xuất | Xưởng phải lập phiếu yêu cầu xuất NL; quản lý kho điều phối lô theo FIFO/FEFO; Nhân viên kho xuất và hệ thống trừ tồn. |
+| BR08 | QC và nhập thành phẩm | Thành phẩm sau sản xuất phải có Phiếu yêu cầu nhập và Biên bản QC thành phẩm; chỉ số đạt được điều phối/nhập kho, số không đạt chuyển xử lý hàng lỗi. |
+| BR09 | Xuất thành phẩm theo đơn hàng | Đến ngày giao, Quản lý kho lấy Đơn hàng làm căn cứ điều phối xuất đúng sản phẩm/số lượng/lô; Nhân viên kho lập phiếu xuất và hệ thống trừ tồn. |
+| BR10 | Quản lý hàng trả về/hàng lỗi | Sau giao hàng, hàng trả về phải qua QC; đạt thì nhập lại kho, không đạt thì chuyển xử lý hàng lỗi/trả về. |
+| BR11 | Kiểm kê và điều chỉnh tồn định kỳ | Kiểm kê là quy trình song song theo lịch; chênh lệch phải được xử lý và chỉ cập nhật tồn sau khi BGĐ phê duyệt điều chỉnh. |
+| BR12 | Quản lý lô, dữ liệu kho và truy vết | Hệ thống quản lý nguyên liệu, thành phẩm, lô, kho, vị trí; mọi biến động tồn phải truy vết được chứng từ nguồn và không được chỉnh trực tiếp. |
+| BR13 | Tra cứu, báo cáo và cảnh báo | Hệ thống cung cấp tra cứu, báo cáo tồn/nhập/xuất/hiệu suất và cảnh báo vận hành. |
 
 ---
 
@@ -150,53 +159,76 @@ Bước 6: Business Process
 | Mã | Business Process | Mô tả |
 |---|---|---|
 | BP01 | Xác thực & phân quyền | Người dùng đăng nhập, hệ thống xác định vai trò/quyền. |
-| BP02 | Đơn hàng & kế hoạch sản xuất | Đặt hàng, lập kế hoạch, duyệt và phân công xưởng. |
-| BP03 | Mua & QC nguyên liệu | Lập/duyệt đơn mua, tiếp nhận nghiệp vụ và QC nguyên liệu. |
-| BP04 | Nhập kho | Điều phối nhập và lập phiếu nhập nguyên liệu/thành phẩm/hàng trả về. |
-| BP05 | Cấp nguyên liệu sản xuất | Xưởng lập yêu cầu, điều phối xuất, Nhân viên kho xuất theo lô FEFO. |
-| BP06 | Nhập thành phẩm sau sản xuất | Xưởng lập yêu cầu nhập, kho điều phối và Nhân viên kho nhập thành phẩm. |
-| BP07 | Giao hàng | Điều phối/xuất thành phẩm theo đơn hàng và lô hợp lệ. |
-| BP08 | Hàng trả về/hàng lỗi | QC hàng trả, nhập lại kho nếu đạt hoặc xử lý nếu không đạt. |
-| BP09 | Kiểm kê & điều chỉnh | Kiểm kê, xử lý chênh lệch, lập đề nghị và phê duyệt điều chỉnh tồn. |
-| BP10 | Quản lý dữ liệu kho | Quản lý nguyên liệu, thành phẩm, lô, kho và vị trí. |
-| BP11 | Tra cứu, báo cáo & cảnh báo | Tra cứu dữ liệu, tổng hợp báo cáo và cảnh báo vận hành. |
+| BP02 | Đơn hàng & KHSX | Khách đặt hàng; Bộ phận KHSX lập kế hoạch có phân công xưởng; BGĐ duyệt; kế hoạch đã duyệt được gửi xưởng. |
+| BP03 | Đối chiếu nhu cầu nguyên liệu | Sau phê duyệt KHSX, hệ thống tự động so nhu cầu NL với tồn khả dụng; đủ/dư thì không mua, thiếu thì tạo/gửi nhu cầu thiếu cho Bộ phận mua hàng. |
+| BP04 | Mua & QC nguyên liệu | Bộ phận mua lập PO cho phần thiếu, BGĐ duyệt; NCC giao hàng; QC trực tiếp tiếp nhận, đối chiếu và lập biên bản số đạt/không đạt; không đạt trả NCC. |
+| BP05 | Nhập kho nguyên liệu | Quản lý kho điều phối kho/vị trí cho số đạt QC; Nhân viên kho lập PNK NL; hệ thống tăng tồn/lô/vị trí. |
+| BP06 | Cấp nguyên liệu sản xuất | Xưởng lập yêu cầu xuất NL; Quản lý kho điều phối lô theo FIFO/FEFO; Nhân viên kho lập PXK NL; hệ thống trừ tồn. |
+| BP07 | Sản xuất & QC thành phẩm | Xưởng sản xuất, lập yêu cầu nhập TP; QC kiểm tra thành phẩm và lập biên bản đạt/không đạt. |
+| BP08 | Nhập kho thành phẩm | Số TP đạt QC được Quản lý kho điều phối; Nhân viên kho lập PNK TP; hệ thống tăng tồn/lô/vị trí. |
+| BP09 | Xuất giao khách | Đến ngày giao trên Đơn hàng, Quản lý kho điều phối lô/số lượng; Nhân viên kho lập PXK TP; hệ thống trừ tồn và cập nhật trạng thái đơn. |
+| BP10 | Hàng trả về/hàng lỗi | Nếu khách trả hàng, QC kiểm tra; đạt thì điều phối/nhập lại, không đạt thì xử lý hàng lỗi/trả về. |
+| BP11 | Kiểm kê & điều chỉnh | Theo lịch định kỳ/yêu cầu: kiểm đếm, lập biên bản, xử lý chênh lệch, đề nghị và phê duyệt điều chỉnh. |
+| BP12 | Quản lý dữ liệu kho | Quản lý nguyên liệu, thành phẩm, lô, kho, vị trí; hỗ trợ truy vết. |
+| BP13 | Tra cứu, báo cáo & cảnh báo | Tra cứu dữ liệu, tổng hợp báo cáo và cảnh báo vận hành. |
 
 ## 6.1. Tổng quan quy trình nghiệp vụ
 
 ```mermaid
 flowchart TD
-    A[Khách hàng đặt đơn] --> B[Lập kế hoạch sản xuất]
-    B --> C[Duyệt kế hoạch]
-    C -->|Đã duyệt| D[Phân công xưởng]
-    D --> E[Lập đơn mua nguyên liệu]
-    E --> F[Duyệt đơn mua]
-    F --> G[QC nguyên liệu]
-    G -->|Đạt| H[Điều phối nhập]
-    H --> I[Nhập kho nguyên liệu]
-    I --> J[Xưởng lập yêu cầu xuất NL]
-    J --> K[Điều phối xuất]
-    K --> L[Xuất kho nguyên liệu]
-    L --> M[Sản xuất]
-    M --> N[Lập yêu cầu nhập thành phẩm]
-    N --> O[Điều phối nhập]
-    O --> P[Nhập kho thành phẩm]
-    P --> Q[Điều phối / xuất thành phẩm]
-    Q --> R[Giao hàng]
+    A[Khách hàng đăng nhập & đặt đơn hàng] --> B[Bộ phận KHSX lập KHSX<br/>có phân công xưởng]
+    B --> C[BGĐ duyệt KHSX]
+    C -->|Từ chối/Yêu cầu chỉnh| B
+    C -->|Đã duyệt| D[Gửi KHSX cho xưởng]
+    D --> E[Hệ thống tự động đối chiếu<br/>Nhu cầu NL với Tồn khả dụng]
+    E -->|Đủ hoặc dư| N[Xưởng lập yêu cầu xuất NL]
+    E -->|Thiếu| F[Gửi nhu cầu thiếu cho BP mua hàng]
+    F --> G[Lập Đơn mua NL]
+    G --> H[BGĐ duyệt Đơn mua]
+    H -->|Đã duyệt| I[NCC giao nguyên liệu đến kho]
+    I --> J[QC trực tiếp tiếp nhận & kiểm tra NL]
+    J --> K[Biên bản QC NL<br/>số đạt / số không đạt]
+    K -->|Không đạt| L[Trả NCC ngay]
+    K -->|Đạt| M[Quản lý kho điều phối nhập NL]
+    M --> M2[Nhân viên kho nhập NL<br/>Tăng tồn/lô/vị trí]
+    M2 --> N
+    N --> O[Quản lý kho điều phối xuất<br/>FIFO/FEFO]
+    O --> P[Nhân viên kho xuất NL<br/>Trừ tồn]
+    P --> Q[Xưởng sản xuất]
+    Q --> R[Xưởng lập Phiếu yêu cầu nhập TP]
+    R --> S[UC04 QC thành phẩm]
+    S -->|Không đạt| T[Xử lý hàng lỗi]
+    S -->|Đạt| U[Biên bản QC TP]
+    U --> V[Quản lý kho điều phối nhập TP]
+    V --> W[Nhân viên kho nhập TP<br/>Tăng tồn/lô/vị trí]
+    W --> X[Đến ngày giao trên Đơn hàng]
+    X --> Y[Quản lý kho điều phối xuất TP<br/>theo đơn hàng & FIFO/FEFO]
+    Y --> Z[Nhân viên kho xuất TP<br/>Trừ tồn]
+    Z --> AA[Giao khách]
+    AA -->|Không trả| AB[Kết thúc đơn hàng]
+    AA -->|Có trả hàng| AC[QC hàng trả về]
+    AC -->|Đạt| AD[Điều phối & nhập lại kho]
+    AC -->|Không đạt| AE[Xử lý hàng lỗi/trả về]
 
-    R -.-> S[Hàng trả về]
-    S --> T[QC hàng trả]
-    T -->|Đạt| U[Nhập kho hàng trả về]
-    T -->|Không đạt| V[Xử lý hàng lỗi / trả về]
-
-    I -.-> W[Kiểm kê]
-    P -.-> W
-    W --> X[Xử lý chênh lệch]
-    X -->|Cần điều chỉnh| Y[Phê duyệt điều chỉnh tồn]
-
-    Z[Quản lý dữ liệu kho/lô/vị trí] -.-> I
-    Z -.-> P
-    AA[Tra cứu / báo cáo / cảnh báo] -.-> Z
+    KK1[Theo lịch định kỳ / yêu cầu quản lý] -.-> KK2[Kiểm kê kho]
+    KK2 --> KK3[Biên bản kiểm kê]
+    KK3 --> KK4{Có chênh lệch?}
+    KK4 -->|Không| KK5[Kết thúc kiểm kê]
+    KK4 -->|Có| KK6[Xử lý chênh lệch]
+    KK6 -->|Cần điều chỉnh| KK7[BGĐ phê duyệt điều chỉnh]
+    KK7 -->|Duyệt| KK8[Cập nhật tồn]
+    KK7 -->|Từ chối| KK9[Giữ nguyên tồn]
 ```
+
+### 6.2. Quy tắc tự động đối chiếu nhu cầu nguyên liệu
+
+Với từng nguyên liệu trong KHSX đã duyệt:
+
+`SoLuongThieu = max(0, NhuCauTheoKHSX - TonKhaDung)`
+
+- `SoLuongThieu = 0`: tồn đủ hoặc dư → không phát sinh mua.
+- `SoLuongThieu > 0`: hệ thống tạo/gửi nhu cầu thiếu cho Bộ phận mua hàng; PO chỉ được lập cho phần thiếu cần mua.
+- Tồn khả dụng phải loại trừ lượng đã giữ/chờ xuất cho nghiệp vụ khác nếu hệ thống áp dụng cơ chế reservation.
 
 ---
 
@@ -218,25 +250,25 @@ Bước 7: phân rã yêu cầu chức năng
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR04 | Lập kế hoạch sản xuất - truy cập/thực hiện | Hệ thống cho phép Bộ phận lập kế hoạch sản xuất thực hiện chức năng Lập kế hoạch sản xuất khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR05 | Lập kế hoạch sản xuất - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Lập kế hoạch sản xuất. |
-| FR06 | Lập kế hoạch sản xuất - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Lập kế hoạch sản xuất, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR04 | Lập KHSX theo đơn hàng | Bộ phận lập KHSX chọn đơn hàng đủ điều kiện và lập kế hoạch với sản phẩm, số lượng, thời gian và nhu cầu nguyên liệu. |
+| FR05 | Phân công xưởng trong KHSX | Ngay trong quá trình lập KHSX, người dùng phải chọn xưởng thực hiện; hệ thống kiểm tra năng lực/lịch xưởng trước khi cho lưu. |
+| FR06 | Gửi KHSX chờ duyệt | KHSX hợp lệ được lưu với trạng thái “Chờ duyệt” và chứa đầy đủ đơn hàng, xưởng, sản phẩm, số lượng, thời gian, nhu cầu NL. |
 
 ## 7.3 Duyệt kế hoạch sản xuất – UC03
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR07 | Duyệt kế hoạch sản xuất - truy cập/thực hiện | Hệ thống cho phép Ban giám đốc thực hiện chức năng Duyệt kế hoạch sản xuất khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR08 | Duyệt kế hoạch sản xuất - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Duyệt kế hoạch sản xuất. |
-| FR09 | Duyệt kế hoạch sản xuất - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Duyệt kế hoạch sản xuất, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR07 | Xem và duyệt KHSX | BGĐ xem toàn bộ nội dung KHSX, bao gồm xưởng đã phân công, và chọn Duyệt/Từ chối/Yêu cầu điều chỉnh. |
+| FR08 | Gửi kế hoạch đã duyệt cho xưởng | Khi duyệt, hệ thống chuyển trạng thái KHSX sang “Đã duyệt” và gửi/hiển thị kế hoạch cho xưởng được phân công. |
+| FR09 | Tự động đối chiếu nhu cầu NL | Ngay sau khi KHSX được duyệt, hệ thống tự động so nhu cầu từng NL với tồn khả dụng; đủ/dư không phát sinh mua, thiếu thì ghi nhận số thiếu và gửi nhu cầu cho Bộ phận mua hàng. |
 
-## 7.4 Phân công xưởng sản xuất – UC04
+## 7.4 Kiểm tra chất lượng thành phẩm – UC04
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR10 | Phân công xưởng sản xuất - truy cập/thực hiện | Hệ thống cho phép Bộ phận lập kế hoạch sản xuất thực hiện chức năng Phân công xưởng sản xuất khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR11 | Phân công xưởng sản xuất - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Phân công xưởng sản xuất. |
-| FR12 | Phân công xưởng sản xuất - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Phân công xưởng sản xuất, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR10 | Tiếp nhận thành phẩm chờ QC | QC xem Phiếu yêu cầu nhập kho thành phẩm sau sản xuất và thông tin KHSX/lô liên quan. |
+| FR11 | Kiểm tra và phân loại số lượng | QC ghi tổng số kiểm tra, số đạt, số không đạt, tiêu chí/kết quả và lý do không đạt. |
+| FR12 | Lập Biên bản QC thành phẩm | Hệ thống lưu Biên bản QC thành phẩm; số đạt chuyển “Đủ điều kiện điều phối nhập”, số không đạt chuyển luồng xử lý hàng lỗi và không được cộng tồn thành phẩm đạt. |
 
 ## 7.5 Thống kê báo cáo & Cảnh báo kho – UC05
 
@@ -298,9 +330,9 @@ Bước 7: phân rã yêu cầu chức năng
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR34 | Xuất kho thành phẩm giao hàng - truy cập/thực hiện | Hệ thống cho phép Nhân viên kho thực hiện chức năng Xuất kho thành phẩm giao hàng khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR35 | Xuất kho thành phẩm giao hàng - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Xuất kho thành phẩm giao hàng. |
-| FR36 | Xuất kho thành phẩm giao hàng - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Xuất kho thành phẩm giao hàng, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR34 | Lấy Đơn hàng làm căn cứ xuất | Đến ngày giao, hệ thống cho phép xử lý các Đơn hàng đủ điều kiện; Đơn hàng là chứng từ chính xác định sản phẩm, số lượng và khách nhận. |
+| FR35 | Xuất đúng lô/số lượng | Phiếu xuất phải sử dụng kết quả điều phối, tuân thủ FIFO/FEFO, không dùng lô hết hạn và không vượt tồn khả dụng. |
+| FR36 | Cập nhật tồn và trạng thái đơn | Sau khi xuất thành công, hệ thống trừ tồn theo lô/vị trí, tạo phiếu xuất và cập nhật trạng thái Đơn hàng “Đã xuất/Đang giao”. |
 
 ## 7.13 Điều phối nhập kho – UC13
 
@@ -330,9 +362,9 @@ Bước 7: phân rã yêu cầu chức năng
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR46 | Nhập kho thành phẩm - truy cập/thực hiện | Hệ thống cho phép Nhân viên kho thực hiện chức năng Nhập kho thành phẩm khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR47 | Nhập kho thành phẩm - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Nhập kho thành phẩm. |
-| FR48 | Nhập kho thành phẩm - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Nhập kho thành phẩm, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR46 | Kiểm tra điều kiện nhập TP | Chỉ cho nhập thành phẩm có Phiếu yêu cầu nhập, Biên bản QC thành phẩm kết luận đạt và thông tin điều phối nhập hợp lệ. |
+| FR47 | Lập phiếu nhập thành phẩm | Nhân viên kho xác nhận số lượng đạt QC, lô sản xuất và vị trí theo điều phối; hệ thống tạo Phiếu nhập kho thành phẩm. |
+| FR48 | Cập nhật tồn/lô/vị trí | Sau khi phiếu nhập thành công, hệ thống tăng tồn thành phẩm, cập nhật lô và vị trí; số không đạt QC không được cộng tồn thành phẩm đạt. |
 
 ## 7.17 Nhập kho hàng trả về – UC17
 
@@ -394,9 +426,9 @@ Bước 7: phân rã yêu cầu chức năng
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR70 | Lập phiếu yêu cầu nhập kho thành phẩm - truy cập/thực hiện | Hệ thống cho phép Xưởng sản xuất thực hiện chức năng Lập phiếu yêu cầu nhập kho thành phẩm khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR71 | Lập phiếu yêu cầu nhập kho thành phẩm - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Lập phiếu yêu cầu nhập kho thành phẩm. |
-| FR72 | Lập phiếu yêu cầu nhập kho thành phẩm - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Lập phiếu yêu cầu nhập kho thành phẩm, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR70 | Lập yêu cầu sau sản xuất | Xưởng chỉ được lập Phiếu yêu cầu nhập kho TP cho KHSX/lệnh sản xuất đã hoàn thành. |
+| FR71 | Ghi nhận thông tin lô sản xuất | Phiếu yêu cầu phải chứa sản phẩm, số lượng hoàn thành, lô, ngày sản xuất và hạn sử dụng nếu có. |
+| FR72 | Chuyển sang QC thành phẩm | Sau khi xác nhận, Phiếu yêu cầu nhập TP được chuyển sang trạng thái chờ QC và là đầu vào của UC04, chưa được cộng tồn. |
 
 ## 7.25 Quản lý thành phẩm – UC25
 
@@ -410,67 +442,68 @@ Bước 7: phân rã yêu cầu chức năng
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR76 | Lập đơn mua nguyên liệu - truy cập/thực hiện | Hệ thống cho phép Bộ phận mua hàng thực hiện chức năng Lập đơn mua nguyên liệu khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR77 | Lập đơn mua nguyên liệu - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Lập đơn mua nguyên liệu. |
-| FR78 | Lập đơn mua nguyên liệu - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Lập đơn mua nguyên liệu, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR76 | Nhận nhu cầu thiếu tự động | Bộ phận mua hàng xem danh sách nguyên liệu thiếu được hệ thống tạo sau khi KHSX đã duyệt được đối chiếu với tồn khả dụng. |
+| FR77 | Lập PO cho phần thiếu | Người dùng chọn NCC, số lượng cần mua, đơn giá dự kiến; số lượng mua mặc định theo phần thiếu và phải có lý do nếu điều chỉnh theo chính sách được phép. |
+| FR78 | Gửi PO chờ duyệt | Đơn mua hợp lệ được lưu ở trạng thái “Chờ phê duyệt” và liên kết KHSX/nhu cầu thiếu nguồn. |
 
 ## 7.27 Duyệt đơn mua nguyên liệu – UC27
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR79 | Duyệt đơn mua nguyên liệu - truy cập/thực hiện | Hệ thống cho phép Ban giám đốc thực hiện chức năng Duyệt đơn mua nguyên liệu khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR80 | Duyệt đơn mua nguyên liệu - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Duyệt đơn mua nguyên liệu. |
-| FR81 | Duyệt đơn mua nguyên liệu - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Duyệt đơn mua nguyên liệu, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR79 | Xem PO chờ duyệt | BGĐ xem KHSX nguồn, nguyên liệu thiếu, NCC, số lượng và thông tin PO. |
+| FR80 | Phê duyệt/từ chối PO | BGĐ duyệt hoặc từ chối; từ chối phải ghi nhận lý do. |
+| FR81 | Cho phép thực hiện mua | Chỉ PO “Đã phê duyệt” mới là căn cứ để Bộ phận mua hàng thực hiện mua và để QC đối chiếu khi NCC giao nguyên liệu. |
 
-## 7.28 Kiểm tra chất lượng nguyên liệu – UC29
-
-| Mã | Functional Requirement | Diễn giải |
-|---|---|---|
-| FR82 | Kiểm tra chất lượng nguyên liệu - truy cập/thực hiện | Hệ thống cho phép Bộ phận QC thực hiện chức năng Kiểm tra chất lượng nguyên liệu khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR83 | Kiểm tra chất lượng nguyên liệu - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Kiểm tra chất lượng nguyên liệu. |
-| FR84 | Kiểm tra chất lượng nguyên liệu - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Kiểm tra chất lượng nguyên liệu, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
-
-## 7.29 Quản lý lô nguyên liệu – UC30
+## 7.29 Kiểm tra chất lượng nguyên liệu – UC29
 
 | Mã | Functional Requirement | Diễn giải |
 |---|---|---|
-| FR85 | Quản lý lô nguyên liệu - truy cập/thực hiện | Hệ thống cho phép Bộ phận quản lý kho thực hiện chức năng Quản lý lô nguyên liệu khi đáp ứng tiền điều kiện và quyền truy cập. |
-| FR86 | Quản lý lô nguyên liệu - xử lý nghiệp vụ | Hệ thống phải kiểm tra dữ liệu/trạng thái liên quan và thực hiện luồng nghiệp vụ chính của Quản lý lô nguyên liệu. |
-| FR87 | Quản lý lô nguyên liệu - lưu/cập nhật kết quả | Hệ thống phải lưu hoặc cập nhật kết quả theo hậu điều kiện của Quản lý lô nguyên liệu, đồng thời không làm thay đổi dữ liệu khi thao tác thất bại. |
+| FR82 | QC trực tiếp khi NCC giao | Khi NCC đưa nguyên liệu đến kho, QC trực tiếp tiếp nhận vật lý, đối chiếu PO đã duyệt và thực hiện kiểm tra; không yêu cầu UC Tiếp nhận riêng. |
+| FR83 | Ghi số đạt/không đạt | Biên bản QC nguyên liệu phải ghi tổng giao, số lượng đạt, số lượng không đạt và lý do/kết quả kiểm tra. |
+| FR84 | Phân luồng sau QC | Số đạt chuyển Quản lý kho để điều phối nhập; số không đạt được trả NCC ngay và không cộng tồn kho. |
 
-## 7.30. Ma trận FR → UC
+## 7.30 Quản lý lô nguyên liệu – UC30
+
+| Mã | Functional Requirement | Diễn giải |
+|---|---|---|
+| FR85 | Quản lý thông tin lô | Quản lý kho được thêm/cập nhật thông tin mã lô, ngày nhập/sản xuất, hạn sử dụng và trạng thái lô theo quyền. |
+| FR86 | Bảo đảm truy vết và FEFO | Lô phải liên kết nguyên liệu, QC, phiếu nhập/xuất và cung cấp dữ liệu hạn dùng cho FEFO. |
+| FR87 | Kiểm soát cập nhật/xóa | Không cho xóa/sửa gây mất truy vết đối với lô đã phát sinh giao dịch; mọi thay đổi hợp lệ phải được lưu. |
+
+## 7.31. Ma trận FR → UC
 
 | UC | FR |
 |---|---|
-| UC01 – Đăng nhập hệ thống | FR01, FR02, FR03 |
-| UC02 – Lập kế hoạch sản xuất | FR04, FR05, FR06 |
-| UC03 – Duyệt kế hoạch sản xuất | FR07, FR08, FR09 |
-| UC04 – Phân công xưởng sản xuất | FR10, FR11, FR12 |
-| UC05 – Thống kê báo cáo & Cảnh báo kho | FR13, FR14, FR15 |
-| UC06 – Tra cứu dữ liệu kho | FR16, FR17, FR18 |
-| UC07 – Lập biên bản kiểm kê | FR19, FR20, FR21 |
-| UC08 – Xử lý chênh lệch kiểm kê | FR22, FR23, FR24 |
-| UC09 – Phê duyệt điều chỉnh tồn kho | FR25, FR26, FR27 |
-| UC10 – Quản lý nguyên liệu | FR28, FR29, FR30 |
-| UC11 – Đặt đơn hàng | FR31, FR32, FR33 |
-| UC12 – Xuất kho thành phẩm giao hàng | FR34, FR35, FR36 |
-| UC13 – Điều phối nhập kho | FR37, FR38, FR39 |
-| UC14 – Kiểm tra hàng trả về | FR40, FR41, FR42 |
-| UC15 – Điều phối xuất kho | FR43, FR44, FR45 |
-| UC16 – Nhập kho thành phẩm | FR46, FR47, FR48 |
-| UC17 – Nhập kho hàng trả về | FR49, FR50, FR51 |
-| UC18 – Xử lý hàng lỗi và hàng trả về | FR52, FR53, FR54 |
-| UC19 – Quản lý dữ liệu kho | FR55, FR56, FR57 |
-| UC20 – Quản lý lô thành phẩm | FR58, FR59, FR60 |
-| UC21 – Nhập kho nguyên liệu | FR61, FR62, FR63 |
-| UC22 – Lập phiếu yêu cầu xuất kho nguyên liệu | FR64, FR65, FR66 |
-| UC23 – Xuất kho nguyên liệu | FR67, FR68, FR69 |
-| UC24 – Lập phiếu yêu cầu nhập kho thành phẩm | FR70, FR71, FR72 |
-| UC25 – Quản lý thành phẩm | FR73, FR74, FR75 |
-| UC26 – Lập đơn mua nguyên liệu | FR76, FR77, FR78 |
-| UC27 – Duyệt đơn mua nguyên liệu | FR79, FR80, FR81 |
-| UC29 – Kiểm tra chất lượng nguyên liệu | FR82, FR83, FR84 |
-| UC30 – Quản lý lô nguyên liệu | FR85, FR86, FR87 |
+| UC01 – Đăng nhập hệ thống | FR01–FR03 |
+| UC02 – Lập kế hoạch sản xuất (bao gồm phân công xưởng) | FR04–FR06 |
+| UC03 – Duyệt KHSX + kích hoạt đối chiếu nhu cầu NL | FR07–FR09 |
+| UC04 – Kiểm tra chất lượng thành phẩm | FR10–FR12 |
+| UC05 – Thống kê báo cáo & Cảnh báo kho | FR13–FR15 |
+| UC06 – Tra cứu dữ liệu kho | FR16–FR18 |
+| UC07 – Lập biên bản kiểm kê | FR19–FR21 |
+| UC08 – Xử lý chênh lệch kiểm kê | FR22–FR24 |
+| UC09 – Phê duyệt điều chỉnh tồn kho | FR25–FR27 |
+| UC10 – Quản lý nguyên liệu | FR28–FR30 |
+| UC11 – Đặt đơn hàng | FR31–FR33 |
+| UC12 – Xuất kho thành phẩm giao hàng | FR34–FR36 |
+| UC13 – Điều phối nhập kho | FR37–FR39 |
+| UC14 – Kiểm tra hàng trả về | FR40–FR42 |
+| UC15 – Điều phối xuất kho | FR43–FR45 |
+| UC16 – Nhập kho thành phẩm | FR46–FR48 |
+| UC17 – Nhập kho hàng trả về | FR49–FR51 |
+| UC18 – Xử lý hàng lỗi và hàng trả về | FR52–FR54 |
+| UC19 – Quản lý dữ liệu kho | FR55–FR57 |
+| UC20 – Quản lý lô thành phẩm | FR58–FR60 |
+| UC21 – Nhập kho nguyên liệu | FR61–FR63 |
+| UC22 – Lập phiếu yêu cầu xuất kho nguyên liệu | FR64–FR66 |
+| UC23 – Xuất kho nguyên liệu | FR67–FR69 |
+| UC24 – Lập phiếu yêu cầu nhập kho thành phẩm | FR70–FR72 |
+| UC25 – Quản lý thành phẩm | FR73–FR75 |
+| UC26 – Lập đơn mua nguyên liệu | FR76–FR78 |
+| UC27 – Duyệt đơn mua nguyên liệu | FR79–FR81 |
+
+| UC29 – Kiểm tra chất lượng nguyên liệu | FR82–FR84 |
+| UC30 – Quản lý lô nguyên liệu | FR85–FR87 |
 
 ---
 
@@ -483,25 +516,27 @@ Bước 8: Business Rules & exceptions
 | Mã | Business Rule | Diễn giải |
 |---|---|---|
 | BRL01 | Phân quyền | Mọi chức năng chỉ được thực hiện bởi Actor có quyền tương ứng. |
-| BRL02 | Không chỉnh tồn trực tiếp | Số lượng tồn kho không được sửa tự do; thay đổi tồn phải phát sinh từ nhập, xuất hoặc điều chỉnh đã được phê duyệt. |
-| BRL03 | Căn cứ chứng từ | Mọi nghiệp vụ nhập/xuất phải gắn với chứng từ hoặc yêu cầu nghiệp vụ trước đó. |
-| BRL04 | QC nguyên liệu | Nguyên liệu chỉ được nhập kho khi kết quả kiểm tra chất lượng đạt yêu cầu. |
-| BRL05 | QC hàng trả về | Hàng trả về chỉ được nhập lại kho khi QC kết luận đạt. |
-| BRL06 | Đơn hàng | Đơn hàng chỉ được tạo khi sản phẩm còn kinh doanh, số lượng > 0 và thông tin giao nhận hợp lệ. |
-| BRL07 | Kế hoạch sản xuất | Kế hoạch chỉ triển khai sau khi Ban giám đốc phê duyệt. |
-| BRL08 | Phân công xưởng | Chỉ phân công xưởng khi năng lực và lịch sản xuất đáp ứng kế hoạch. |
-| BRL09 | Yêu cầu xuất nguyên liệu | Phiếu yêu cầu xuất nguyên liệu phải gắn với lệnh sản xuất đang hoạt động. |
-| BRL10 | Yêu cầu nhập thành phẩm | Phiếu yêu cầu nhập thành phẩm phải gắn với lệnh sản xuất đã hoàn thành. |
-| BRL11 | FIFO/FEFO | Khi lựa chọn lô để xuất, hệ thống ưu tiên FIFO/FEFO tùy loại hàng và thông tin hạn sử dụng. |
-| BRL12 | Lô hết hạn | Không cho phép xuất lô đã hết hạn sử dụng. |
-| BRL13 | Số lượng xuất | Số lượng xuất của từng lô không được vượt tồn khả dụng; tổng lô chọn phải đáp ứng yêu cầu. |
-| BRL14 | Vị trí lưu kho | Chỉ cho nhập vào vị trí phù hợp loại hàng và đủ sức chứa. |
-| BRL15 | Kiểm kê | Biên bản kiểm kê phải ghi số lượng hệ thống, số lượng thực tế và chênh lệch. |
-| BRL16 | Điều chỉnh tồn | Điều chỉnh tồn do kiểm kê chỉ được thực hiện sau khi Ban giám đốc phê duyệt. |
-| BRL17 | Xóa dữ liệu danh mục | Không xóa nguyên liệu/thành phẩm/lô đang được tham chiếu bởi nghiệp vụ đã phát sinh. |
-| BRL18 | Mã duy nhất | Mã đơn hàng, mã phiếu và mã lô phải bảo đảm tính duy nhất theo phạm vi quản lý. |
-| BRL19 | Cảnh báo kho | Cảnh báo phải dựa trên dữ liệu tồn, lô, hạn sử dụng và ngưỡng cấu hình hợp lệ. |
-| BRL20 | Truy vết | Các nghiệp vụ nhập/xuất, kiểm kê, điều chỉnh và xử lý hàng phải truy ngược được chứng từ/lô liên quan. |
+| BRL02 | Không chỉnh tồn trực tiếp | Tồn kho chỉ thay đổi từ phiếu nhập, phiếu xuất hoặc điều chỉnh đã được phê duyệt. |
+| BRL03 | Căn cứ chứng từ | Mọi nhập/xuất phải gắn chứng từ/yêu cầu nghiệp vụ hợp lệ. |
+| BRL04 | KHSX bao gồm xưởng | Xưởng thực hiện phải được chọn ngay khi lập KHSX và phải đáp ứng năng lực/lịch sản xuất. |
+| BRL05 | KHSX chỉ triển khai sau duyệt | Chỉ KHSX “Đã duyệt” mới được gửi xưởng và kích hoạt đối chiếu nhu cầu NL. |
+| BRL06 | Tự động đối chiếu NL | `Thiếu = max(0, Nhu cầu KHSX − Tồn khả dụng)`; đủ/dư không mua, thiếu mới gửi BP mua hàng. |
+| BRL07 | PO theo nhu cầu thiếu | Đơn mua NL phải liên kết KHSX/nhu cầu thiếu và phải được BGĐ duyệt trước khi mua. |
+| BRL08 | Không có UC Tiếp nhận | Khi NCC giao hàng, QC trực tiếp tiếp nhận vật lý, đối chiếu PO và QC trong UC29. |
+| BRL09 | QC nguyên liệu | Biên bản QC NL phải tách số đạt/không đạt; số không đạt trả NCC, không cộng tồn. |
+| BRL10 | Điều phối trước nhập | Hàng đạt QC phải được Quản lý kho xác định kho/khu vực/vị trí trước khi Nhân viên kho nhập. |
+| BRL11 | Yêu cầu xuất NL | Xưởng không tự lấy NL; phải có Phiếu yêu cầu xuất NL gắn KHSX/lệnh sản xuất hợp lệ. |
+| BRL12 | FIFO/FEFO | Quản lý kho điều phối lô xuất theo FIFO/FEFO; không xuất lô hết hạn và không vượt tồn khả dụng. |
+| BRL13 | Yêu cầu nhập TP | Xưởng lập Phiếu yêu cầu nhập TP sau khi hoàn thành sản xuất; phiếu chưa làm tăng tồn. |
+| BRL14 | QC thành phẩm | Thành phẩm phải qua UC04 – Kiểm tra chất lượng thành phẩm; chỉ số đạt QC mới được điều phối/nhập kho TP, số không đạt chuyển xử lý hàng lỗi. |
+| BRL15 | Xuất TP theo Đơn hàng | Đơn hàng là chứng từ chính để xác định sản phẩm, số lượng và ngày giao; KHSX chỉ hỗ trợ truy vết nguồn sản xuất. |
+| BRL16 | Hàng trả về | Hàng trả sau giao phải qua QC; đạt mới được nhập lại, không đạt chuyển xử lý hàng lỗi/trả về. |
+| BRL17 | Kiểm kê định kỳ | Kiểm kê chạy theo lịch định kỳ hoặc yêu cầu, độc lập với luồng đơn hàng/sản xuất hằng ngày. |
+| BRL18 | Điều chỉnh tồn | Chênh lệch chỉ làm thay đổi tồn sau khi có đề nghị và BGĐ phê duyệt. |
+| BRL19 | Vị trí lưu kho | Chỉ nhập vào kho/khu vực/vị trí phù hợp và đủ sức chứa. |
+| BRL20 | Truy vết | Mọi giao dịch phải truy vết từ đơn hàng/KHSX/PO/QC/yêu cầu/điều phối đến phiếu nhập/xuất và lô. |
+| BRL21 | Mã duy nhất | Mã đơn hàng, KHSX, PO, biên bản QC, phiếu nhập/xuất và mã lô phải duy nhất trong phạm vi quản lý. |
+| BRL22 | Cảnh báo kho | Cảnh báo dựa trên tồn, lô, hạn sử dụng và ngưỡng cấu hình hợp lệ. |
 
 ## 8.2. Các ngoại lệ chính
 
@@ -539,7 +574,7 @@ Bước 9: mô hình hóa hệ thống (Data Modeling)
 | E04 | DonHang | Đơn hàng thành phẩm và thông tin giao nhận. |
 | E05 | ChiTietDonHang | Sản phẩm và số lượng trong đơn hàng. |
 | E06 | KeHoachSanXuat | Kế hoạch sản xuất theo đơn hàng/nhu cầu. |
-| E07 | PhanCongXuong | Thông tin xưởng, số lượng và thời gian được phân công. |
+| E07 | ChiTietKeHoachXuong | Thông tin xưởng được chọn ngay trong KHSX, số lượng, thời gian và năng lực liên quan. |
 | E08 | XuongSanXuat | Thông tin xưởng, năng lực và lịch sản xuất. |
 | E09 | LenhSanXuat | Lệnh sản xuất làm căn cứ cấp nguyên liệu/nhập thành phẩm. |
 | E10 | NguyenLieu | Danh mục nguyên liệu. |
@@ -552,23 +587,25 @@ Bước 9: mô hình hóa hệ thống (Data Modeling)
 | E17 | TonKho | Số lượng tồn theo hàng/lô/kho/vị trí. |
 | E18 | DonMuaNguyenLieu | Đơn mua nguyên liệu và trạng thái phê duyệt. |
 | E19 | NhaCungCap | Thông tin nhà cung cấp nguyên liệu. |
-| E20 | KetQuaQCNguyenLieu | Kết quả kiểm tra chất lượng nguyên liệu. |
-| E21 | YeuCauNhapKhoThanhPham | Yêu cầu nhập thành phẩm từ xưởng. |
-| E22 | YeuCauXuatKhoNguyenLieu | Yêu cầu cấp nguyên liệu theo lệnh sản xuất. |
-| E23 | DieuPhoiNhapKho | Kho/khu vực được chỉ định cho lô nhập. |
-| E24 | DieuPhoiXuatKho | Kho/lô/số lượng được chỉ định cho yêu cầu xuất. |
-| E25 | PhieuNhapKho | Chứng từ nhập kho; phân loại nguyên liệu/thành phẩm/trả về. |
-| E26 | ChiTietPhieuNhap | Hàng, lô, số lượng, vị trí của phiếu nhập. |
-| E27 | PhieuXuatKho | Chứng từ xuất kho; phân loại nguyên liệu/thành phẩm. |
-| E28 | ChiTietPhieuXuat | Hàng, lô và số lượng của phiếu xuất. |
-| E29 | BienBanKiemKe | Thông tin đợt/biên bản kiểm kê. |
-| E30 | ChiTietKiemKe | Tồn hệ thống, thực tế và chênh lệch theo lô/vị trí. |
-| E31 | XuLyChenhLech | Nguyên nhân và phương án xử lý chênh lệch. |
-| E32 | DeNghiDieuChinhTon | Đề nghị điều chỉnh và trạng thái phê duyệt. |
-| E33 | YeuCauTraHang | Yêu cầu trả hàng gắn đơn hàng/phiếu xuất. |
-| E34 | KetQuaKiemTraHangTra | Kết quả QC hàng trả về. |
-| E35 | XuLyHangLoiTraVe | Phân loại/phương án xử lý hàng lỗi hoặc trả về. |
-| E36 | CanhBaoKho | Cảnh báo tồn thấp/cao, sắp hết hạn và các cảnh báo kho. |
+| E20 | BienBanQCNguyenLieu | PO/NCC/lô, tổng giao, số đạt, số không đạt, kết luận và lý do QC nguyên liệu. |
+| E21 | NhuCauMuaNguyenLieu | Phần thiếu được hệ thống tính tự động từ KHSX đã duyệt và tồn khả dụng. |
+| E22 | YeuCauNhapKhoThanhPham | Yêu cầu nhập thành phẩm từ xưởng sau sản xuất. |
+| E22A | BienBanQCThanhPham | Kết quả QC thành phẩm: tổng kiểm, số đạt, số không đạt, lý do và kết luận. |
+| E23 | YeuCauXuatKhoNguyenLieu | Yêu cầu cấp nguyên liệu theo lệnh sản xuất. |
+| E24 | DieuPhoiNhapKho | Kho/khu vực được chỉ định cho lô nhập. |
+| E25 | DieuPhoiXuatKho | Kho/lô/số lượng được chỉ định cho yêu cầu xuất. |
+| E26 | PhieuNhapKho | Chứng từ nhập kho; phân loại nguyên liệu/thành phẩm/trả về. |
+| E27 | ChiTietPhieuNhap | Hàng, lô, số lượng, vị trí của phiếu nhập. |
+| E28 | PhieuXuatKho | Chứng từ xuất kho; phân loại nguyên liệu/thành phẩm. |
+| E29 | ChiTietPhieuXuat | Hàng, lô và số lượng của phiếu xuất. |
+| E30 | BienBanKiemKe | Thông tin đợt/biên bản kiểm kê. |
+| E31 | ChiTietKiemKe | Tồn hệ thống, thực tế và chênh lệch theo lô/vị trí. |
+| E32 | XuLyChenhLech | Nguyên nhân và phương án xử lý chênh lệch. |
+| E33 | DeNghiDieuChinhTon | Đề nghị điều chỉnh và trạng thái phê duyệt. |
+| E34 | YeuCauTraHang | Yêu cầu trả hàng gắn đơn hàng/phiếu xuất. |
+| E35 | KetQuaKiemTraHangTra | Kết quả QC hàng trả về. |
+| E36 | XuLyHangLoiTraVe | Phân loại/phương án xử lý hàng lỗi hoặc trả về. |
+| E37 | CanhBaoKho | Cảnh báo tồn thấp/cao, sắp hết hạn và các cảnh báo kho. |
 
 ## 9.2. Quan hệ dữ liệu tổng quan
 
@@ -578,8 +615,8 @@ erDiagram
     KHACHHANG ||--o{ DONHANG : dat
     DONHANG ||--|{ CHITIETDONHANG : gom
     DONHANG ||--o{ KEHOACHSANXUAT : can_cu
-    KEHOACHSANXUAT ||--o{ PHANCONGXUONG : phan_cong
-    XUONGSANXUAT ||--o{ PHANCONGXUONG : thuc_hien
+    KEHOACHSANXUAT ||--o{ CHITIETKEHOACHXUONG : phan_cong
+    XUONGSANXUAT ||--o{ CHITIETKEHOACHXUONG : thuc_hien
     KEHOACHSANXUAT ||--o{ LENHSANXUAT : trien_khai
 
     NGUYENLIEU ||--o{ LONGUYENLIEU : co
@@ -590,12 +627,15 @@ erDiagram
     LONGUYENLIEU ||--o{ TONKHO : ton
     LOTANHPHAM ||--o{ TONKHO : ton
 
-    KEHOACHSANXUAT ||--o{ DONMUANGUYENLIEU : can_cu
+    KEHOACHSANXUAT ||--o{ NHUCAUMUANGUYENLIEU : tu_dong_tinh
+    NHUCAUMUANGUYENLIEU ||--o{ DONMUANGUYENLIEU : can_cu
     NHACUNGCAP ||--o{ DONMUANGUYENLIEU : cung_cap
-    LONGUYENLIEU ||--o| KETQUAQCNGUYENLIEU : duoc_kiem_tra
+    DONMUANGUYENLIEU ||--o{ BIENBANQCNGUYENLIEU : doi_chieu
+    LONGUYENLIEU ||--o| BIENBANQCNGUYENLIEU : duoc_kiem_tra
 
     LENHSANXUAT ||--o{ YEUCAUXUATKHONGUYENLIEU : yeu_cau
     LENHSANXUAT ||--o{ YEUCAUNHAPKHOTHANHPHAM : tao_ra
+    YEUCAUNHAPKHOTHANHPHAM ||--o| BIENBANQCTHANHPHAM : duoc_kiem_tra
 
     DIEUPHOINHAPKHO ||--o{ PHIEUNHAPKHO : dan_den
     PHIEUNHAPKHO ||--|{ CHITIETPHIEUNHAP : gom
@@ -634,7 +674,7 @@ Bước 10: yêu cầu phi chức năng
 | NFR04 | Reliability | Chống xử lý lặp | Một yêu cầu/phiếu ở trạng thái đã xử lý không được xử lý lại gây cộng/trừ tồn lần hai. |
 | NFR05 | Security | Xác thực | Chức năng nghiệp vụ yêu cầu người dùng được xác thực. |
 | NFR06 | Security | Phân quyền | Quyền truy cập phải được kiểm soát theo Actor/vai trò. |
-| NFR07 | Auditability | Truy vết | Các thay đổi tồn kho, phê duyệt, QC và xử lý chênh lệch cần lưu người thực hiện, thời gian và chứng từ liên quan. |
+| NFR07 | Auditability | Truy vết | Các thay đổi tồn kho, phê duyệt, QC nguyên liệu/thành phẩm/hàng trả và xử lý chênh lệch cần lưu người thực hiện, thời gian và chứng từ liên quan. |
 | NFR08 | Data Integrity | Toàn vẹn tham chiếu | Phiếu nhập/xuất, lô, đơn hàng, kế hoạch, lệnh sản xuất và kiểm kê phải duy trì liên kết dữ liệu hợp lệ. |
 | NFR09 | Availability | Tính sẵn sàng | Các chức năng kho cốt lõi cần duy trì hoạt động ổn định trong giờ vận hành. |
 | NFR10 | Usability | Dễ sử dụng | Giao diện phải phân tách rõ danh sách chờ xử lý, trạng thái và thao tác theo từng vai trò. |
@@ -660,40 +700,52 @@ flowchart LR
     XUONG[Xưởng sản xuất]
     BGD[Ban giám đốc]
     MUA[Bộ phận mua hàng]
-    HDKK[Hội đồng kiểm kê]
+    HDKK[Hội đồng/BP kiểm kê]
 
-    UC01((UC01<br/>Đăng nhập hệ thống))
-    UC02((UC02<br/>Lập kế hoạch sản xuất))
-    UC03((UC03<br/>Duyệt kế hoạch sản xuất))
-    UC04((UC04<br/>Phân công xưởng sản xuất))
-    UC05((UC05<br/>Thống kê báo cáo & Cảnh báo kho))
-    UC06((UC06<br/>Tra cứu dữ liệu kho))
+    UC01((UC01<br/>Đăng nhập))
+    UC02((UC02<br/>Lập KHSX<br/>+ phân công xưởng))
+    UC03((UC03<br/>Duyệt KHSX<br/>+ kích hoạt đối chiếu NL))
+    UC05((UC05<br/>Báo cáo & cảnh báo))
+    UC06((UC06<br/>Tra cứu kho))
     UC07((UC07<br/>Lập biên bản kiểm kê))
-    UC08((UC08<br/>Xử lý chênh lệch kiểm kê))
-    UC09((UC09<br/>Phê duyệt điều chỉnh tồn kho))
+    UC08((UC08<br/>Xử lý chênh lệch))
+    UC09((UC09<br/>Duyệt điều chỉnh tồn))
     UC10((UC10<br/>Quản lý nguyên liệu))
     UC11((UC11<br/>Đặt đơn hàng))
-    UC12((UC12<br/>Xuất kho thành phẩm giao hàng))
-    UC13((UC13<br/>Điều phối nhập kho))
-    UC14((UC14<br/>Kiểm tra hàng trả về))
-    UC15((UC15<br/>Điều phối xuất kho))
-    UC16((UC16<br/>Nhập kho thành phẩm))
-    UC17((UC17<br/>Nhập kho hàng trả về))
-    UC18((UC18<br/>Xử lý hàng lỗi và hàng trả về))
+    UC12((UC12<br/>Xuất TP giao hàng))
+    UC13((UC13<br/>Điều phối nhập))
+    UC14((UC14<br/>QC hàng trả))
+    UC15((UC15<br/>Điều phối xuất))
+    UC16((UC16<br/>Nhập kho TP))
+    UC17((UC17<br/>Nhập hàng trả))
+    UC18((UC18<br/>Xử lý hàng lỗi/trả))
     UC19((UC19<br/>Quản lý dữ liệu kho))
-    UC20((UC20<br/>Quản lý lô thành phẩm))
-    UC21((UC21<br/>Nhập kho nguyên liệu))
-    UC22((UC22<br/>Lập phiếu yêu cầu xuất kho nguyên liệu))
-    UC23((UC23<br/>Xuất kho nguyên liệu))
-    UC24((UC24<br/>Lập phiếu yêu cầu nhập kho thành phẩm))
+    UC20((UC20<br/>Quản lý lô TP))
+    UC21((UC21<br/>Nhập kho NL))
+    UC22((UC22<br/>Yêu cầu xuất NL))
+    UC23((UC23<br/>Xuất kho NL))
+    UC24((UC24<br/>Yêu cầu nhập TP))
     UC25((UC25<br/>Quản lý thành phẩm))
-    UC26((UC26<br/>Lập đơn mua nguyên liệu))
-    UC27((UC27<br/>Duyệt đơn mua nguyên liệu))
-    UC29((UC29<br/>Kiểm tra chất lượng nguyên liệu))
-    UC30((UC30<br/>Quản lý lô nguyên liệu))
+    UC26((UC26<br/>Lập đơn mua NL))
+    UC27((UC27<br/>Duyệt đơn mua NL))
+    UC04((UC04<br/>QC thành phẩm))
+    UC29((UC29<br/>QC nguyên liệu))
+    UC30((UC30<br/>Quản lý lô NL))
+
     KH --> UC01
     KH --> UC11
-    KHQL --> UC01
+    KHXS --> UC01
+    KHXS --> UC02
+    BGD --> UC03
+    BGD --> UC05
+    BGD --> UC09
+    BGD --> UC27
+    MUA --> UC26
+    QC --> UC14
+    QC --> UC04
+    QC --> UC29
+    XUONG --> UC22
+    XUONG --> UC24
     KHQL --> UC05
     KHQL --> UC06
     KHQL --> UC08
@@ -705,34 +757,18 @@ flowchart LR
     KHQL --> UC20
     KHQL --> UC25
     KHQL --> UC30
-    NVK --> UC01
     NVK --> UC06
     NVK --> UC12
     NVK --> UC16
     NVK --> UC17
     NVK --> UC21
     NVK --> UC23
-    QC --> UC01
-    QC --> UC14
-    QC --> UC29
-    KHXS --> UC01
-    KHXS --> UC02
-    KHXS --> UC04
-    XUONG --> UC01
-    XUONG --> UC22
-    XUONG --> UC24
-    BGD --> UC01
-    BGD --> UC03
-    BGD --> UC05
-    BGD --> UC09
-    BGD --> UC27
-    MUA --> UC01
-    MUA --> UC26
-    HDKK --> UC01
     HDKK --> UC07
 ```
 
-> Quan hệ trên thể hiện Actor chính/phạm vi thao tác. Các quan hệ nghiệp vụ giữa Use Case được mô tả chi tiết trong Business Process và từng đặc tả UC.
+> **Phân công xưởng đã được gộp vào UC02:** đây không còn là một Use Case độc lập mà là một bước bắt buộc khi lập KHSX.  
+> **Đối chiếu nhu cầu nguyên liệu** là hành vi tự động được kích hoạt sau UC03 khi KHSX chuyển sang “Đã duyệt”.  
+> **UC04 – Kiểm tra chất lượng thành phẩm** là Use Case QC thành phẩm trước nhập kho; chức năng phân công xưởng trước đây đã được gộp vào UC02.
 
 ---
 
@@ -773,24 +809,25 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC02 |
 | Tên | Lập kế hoạch sản xuất |
 | Actor | Bộ phận lập kế hoạch sản xuất |
-| Mục tiêu | Lập kế hoạch sản xuất dựa trên đơn hàng, nhu cầu, năng lực và tình trạng nguyên vật liệu. |
-| Tiền điều kiện | Đã đăng nhập và có quyền; dữ liệu đơn hàng, nhu cầu, năng lực sản xuất và nguyên vật liệu sẵn sàng. |
-| Hậu điều kiện | Kế hoạch được lưu với trạng thái “Chờ duyệt”. |
+| Mục tiêu | Lập KHSX theo đơn hàng và **phân công xưởng ngay trong kế hoạch**. |
+| Tiền điều kiện | Đã đăng nhập/có quyền; có đơn hàng đủ điều kiện; dữ liệu xưởng, năng lực, lịch sản xuất, danh mục nguyên liệu sẵn sàng. |
+| Hậu điều kiện | KHSX chứa đơn hàng, sản phẩm, số lượng, thời gian, xưởng, nhu cầu NL và được lưu “Chờ duyệt”. |
 
 ### Luồng chính
 
-1. Chọn chức năng lập kế hoạch sản xuất.
-2. Chọn đơn hàng đủ điều kiện.
-3. Nhập sản phẩm/nguyên liệu, số lượng và thời gian dự kiến.
-4. Kiểm tra khả thi theo nguyên vật liệu, thời gian và năng lực sản xuất.
-5. Xác nhận và lưu kế hoạch với trạng thái “Chờ duyệt”.
+1. Mở chức năng Lập KHSX và chọn đơn hàng đủ điều kiện.
+2. Hệ thống hiển thị sản phẩm/số lượng/ngày giao từ đơn hàng.
+3. Người dùng xác định số lượng sản xuất, thời gian và nhu cầu nguyên liệu.
+4. Người dùng chọn xưởng thực hiện ngay trong KHSX.
+5. Hệ thống kiểm tra năng lực và lịch sản xuất của xưởng.
+6. Người dùng xác nhận; hệ thống lưu KHSX ở trạng thái “Chờ duyệt”.
 
 ### Ngoại lệ / luồng thay thế chính
 
-- E1: Không có đơn hàng phù hợp → kết thúc.
-- E2: Thiếu nguyên vật liệu hoặc năng lực → điều chỉnh kế hoạch.
-- E3: Thông tin kế hoạch không hợp lệ → yêu cầu bổ sung.
-- E4: Không thể truy xuất/lưu dữ liệu → thông báo lỗi.
+* E1: Không có đơn hàng phù hợp → kết thúc.
+* E2: Xưởng không đủ năng lực/trùng lịch → chọn xưởng khác hoặc điều chỉnh thời gian/số lượng.
+* E3: Thiếu dữ liệu bắt buộc → không lưu.
+* E4: Lỗi CSDL → không tạo KHSX nửa hoàn tất.
 
 ## UC03 – Duyệt kế hoạch sản xuất
 
@@ -799,49 +836,55 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC03 |
 | Tên | Duyệt kế hoạch sản xuất |
 | Actor | Ban giám đốc |
-| Mục tiêu | Phê duyệt, yêu cầu điều chỉnh hoặc từ chối kế hoạch sản xuất. |
-| Tiền điều kiện | Kế hoạch sản xuất ở trạng thái “Chờ duyệt”; Ban giám đốc đã đăng nhập và có quyền. |
-| Hậu điều kiện | Kế hoạch chuyển sang “Đã duyệt”, “Yêu cầu điều chỉnh” hoặc “Từ chối”. |
+| Mục tiêu | Duyệt/từ chối/yêu cầu điều chỉnh KHSX; khi duyệt thì gửi kế hoạch cho xưởng và kích hoạt tự động đối chiếu nhu cầu nguyên liệu. |
+| Tiền điều kiện | KHSX “Chờ duyệt”, đã có xưởng được phân công. |
+| Hậu điều kiện | KHSX chuyển “Đã duyệt”, “Yêu cầu điều chỉnh” hoặc “Từ chối”; nếu duyệt, xưởng nhận kế hoạch và hệ thống ghi nhận phần NL thiếu (nếu có). |
 
 ### Luồng chính
 
-1. Mở danh sách kế hoạch chờ duyệt.
-2. Chọn kế hoạch và xem chi tiết.
-3. Đối chiếu nhu cầu, nguyên vật liệu, năng lực và thời gian.
-4. Chọn Phê duyệt/Từ chối/Yêu cầu điều chỉnh.
-5. Hệ thống ghi nhận kết quả và cập nhật trạng thái.
+1. BGĐ mở danh sách KHSX chờ duyệt.
+2. Xem đơn hàng, sản phẩm, số lượng, thời gian, xưởng và nhu cầu nguyên liệu.
+3. Chọn **Duyệt**.
+4. Hệ thống cập nhật KHSX = “Đã duyệt” và gửi/hiển thị kế hoạch cho xưởng.
+5. Hệ thống tự động đọc tồn khả dụng của từng nguyên liệu.
+6. Hệ thống tính `SoLuongThieu = max(0, NhuCauTheoKHSX - TonKhaDung)`.
+7. Nguyên liệu có `SoLuongThieu = 0` không phát sinh yêu cầu mua.
+8. Nguyên liệu có `SoLuongThieu > 0` được ghi nhận nhu cầu thiếu và gửi Bộ phận mua hàng.
 
 ### Ngoại lệ / luồng thay thế chính
 
-- E1: Không có kế hoạch chờ duyệt → thông báo.
-- E2: Thông tin kế hoạch không truy xuất được → quay lại danh sách.
-- E3: Từ chối/yêu cầu điều chỉnh phải ghi nhận nội dung phù hợp.
+* A1: BGĐ chọn Yêu cầu điều chỉnh → nhập nội dung; trả kế hoạch về Bộ phận KHSX.
+* A2: BGĐ chọn Từ chối → nhập lý do; kế hoạch không được triển khai.
+* E1: Không truy xuất được tồn khi đối chiếu → KHSX vẫn giữ kết quả duyệt nhưng trạng thái đối chiếu NL = “Chờ xử lý”, không tự tạo số thiếu sai.
+* E2: KHSX đã được xử lý → không duyệt lặp.
 
-## UC04 – Phân công xưởng sản xuất
+## UC04 – Kiểm tra chất lượng thành phẩm
 
 | Thành phần | Nội dung |
 |---|---|
 | Use Case ID | UC04 |
-| Tên | Phân công xưởng sản xuất |
-| Actor | Bộ phận lập kế hoạch sản xuất |
-| Mục tiêu | Phân công xưởng phù hợp cho kế hoạch sản xuất đã duyệt. |
-| Tiền điều kiện | Kế hoạch đã duyệt và ở trạng thái “Chờ phân công”; dữ liệu xưởng, năng lực và lịch sản xuất có sẵn. |
-| Hậu điều kiện | Thông tin xưởng, sản phẩm, số lượng và thời gian được lưu; xưởng nhận thông tin phân công. |
+| Tên | Kiểm tra chất lượng thành phẩm |
+| Actor | Bộ phận QC |
+| Mục tiêu | Kiểm tra thành phẩm sau sản xuất trước khi Quản lý kho điều phối nhập. |
+| Tiền điều kiện | Có Phiếu yêu cầu nhập kho TP “Chờ QC”; thành phẩm/lô đã sẵn sàng để kiểm tra. |
+| Hậu điều kiện | Biên bản QC TP ghi rõ tổng kiểm, số đạt, số không đạt; số đạt chuyển chờ điều phối nhập, số không đạt chuyển xử lý hàng lỗi. |
 
 ### Luồng chính
 
-1. Chọn kế hoạch chờ phân công.
-2. Xem chi tiết kế hoạch.
-3. Chọn xưởng sản xuất.
-4. Hệ thống kiểm tra năng lực và lịch sản xuất.
-5. Xác nhận phân công; hệ thống lưu và gửi thông tin đến xưởng.
+1. QC mở danh sách Phiếu yêu cầu nhập TP chờ kiểm tra.
+2. Chọn phiếu và xem KHSX, xưởng, sản phẩm, lô, số lượng hoàn thành.
+3. QC thực hiện kiểm tra theo tiêu chuẩn chất lượng.
+4. Nhập tổng số kiểm, số đạt, số không đạt, kết quả/ghi chú/lý do không đạt.
+5. Hệ thống kiểm tra `Số đạt + Số không đạt = Tổng số kiểm` và các giá trị không âm.
+6. QC xác nhận; hệ thống lập Biên bản QC thành phẩm.
+7. Số đạt chuyển trạng thái “Đủ điều kiện điều phối nhập kho”.
+8. Số không đạt chuyển UC18 – Xử lý hàng lỗi và không được cộng tồn TP đạt.
 
 ### Ngoại lệ / luồng thay thế chính
 
-- E1: Xưởng không đủ năng lực/lịch không phù hợp → chọn xưởng hoặc thời gian khác.
-- E2: Người dùng hủy → không lưu.
-- E3: Không lấy được dữ liệu xưởng/kế hoạch → thông báo lỗi.
-- E4: Không gửi được thông tin đến xưởng → vẫn giữ dữ liệu phân công để gửi lại.
+* E1: Thiếu kết quả/không cân bằng số lượng → không cho xác nhận.
+* E2: Không thể kiểm tra ngay → lưu “Chờ xử lý/Chờ QC”, chưa cho nhập kho.
+* E3: Phiếu đã QC → không tạo biên bản trùng.
 
 ## UC05 – Thống kê báo cáo & Cảnh báo kho
 
@@ -1030,24 +1073,22 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC12 |
 | Tên | Xuất kho thành phẩm giao hàng |
 | Actor | Nhân viên kho |
-| Mục tiêu | Lập phiếu xuất thành phẩm theo đơn hàng và cập nhật tồn kho. |
-| Tiền điều kiện | Có đơn hàng hợp lệ chờ giao; thành phẩm đủ số lượng. |
-| Hậu điều kiện | Phiếu xuất được lưu; tồn thành phẩm giảm theo lô; đơn chuyển “Đã xuất / Đang giao”. |
+| Mục tiêu | Lập Phiếu xuất kho TP theo điều phối và **Đơn hàng** để giao đúng sản phẩm/số lượng cho khách. |
+| Tiền điều kiện | Đơn hàng đến/đủ điều kiện giao; TP đã QC đạt và nhập kho; có điều phối xuất hợp lệ. |
+| Hậu điều kiện | PXK TP được tạo, tồn/lô giảm, trạng thái Đơn hàng cập nhật “Đã xuất/Đang giao”. |
 
 ### Luồng chính
-
-1. Chọn đơn hàng cần giao.
-2. Kiểm tra đơn hàng và tồn kho khả dụng.
-3. Hệ thống gợi ý lô theo kế hoạch/FIFO/FEFO.
-4. Chọn lô và số lượng xuất.
-5. Lập phiếu xuất; xác nhận; hệ thống trừ tồn và cập nhật trạng thái đơn.
+1. Mở danh sách Đơn hàng đã được Quản lý kho điều phối xuất.
+2. Chọn đơn hàng; hệ thống hiển thị sản phẩm, số lượng, khách nhận, ngày giao và lô đã điều phối.
+3. Nhân viên kho lấy hàng đúng lô/vị trí và xác nhận số lượng thực xuất.
+4. Hệ thống kiểm tra lô chưa hết hạn và số lượng không vượt tồn.
+5. Xác nhận; hệ thống tạo PXK TP, trừ tồn theo lô/vị trí và cập nhật trạng thái đơn hàng.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Không có đơn cần giao → kết thúc.
-- E2: Đơn không hợp lệ/đã xuất → từ chối.
-- E3: Tồn không đủ → không cho xuất.
-- E4: Lô hết hạn hoặc số lượng vượt tồn → chọn lại.
+* E1: Đơn đã xuất → không xử lý lại.
+* E2: Lô hết hạn/không đủ tồn → không xác nhận; trả lại Quản lý kho điều phối lại.
+* E3: Số lượng thực xuất lệch điều phối → yêu cầu đối chiếu.
+* E4: Lỗi tạo phiếu/cập nhật tồn → rollback, không trừ tồn một phần.
 
 ## UC13 – Điều phối nhập kho
 
@@ -1132,23 +1173,22 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC16 |
 | Tên | Nhập kho thành phẩm |
 | Actor | Nhân viên kho |
-| Mục tiêu | Tạo phiếu nhập kho thành phẩm từ phiếu yêu cầu nhập và cập nhật tồn/lô/vị trí. |
-| Tiền điều kiện | Thành phẩm đã hoàn thành sản xuất; thông tin thành phẩm tồn tại; Nhân viên kho có quyền. |
-| Hậu điều kiện | Phiếu nhập thành phẩm được tạo; tồn, lô sản xuất và vị trí lưu trữ được cập nhật. |
+| Mục tiêu | Nhập **số lượng thành phẩm đạt QC** theo điều phối và cập nhật tồn/lô/vị trí. |
+| Tiền điều kiện | Có Phiếu yêu cầu nhập TP, Biên bản QC TP kết luận đạt cho số lượng cần nhập và điều phối nhập hợp lệ. |
+| Hậu điều kiện | PNK TP được tạo; chỉ số lượng đạt QC làm tăng tồn thành phẩm. |
 
 ### Luồng chính
-
-1. Mở chức năng Nhập kho thành phẩm.
-2. Lấy dữ liệu từ phiếu yêu cầu nhập kho thành phẩm.
-3. Kiểm tra thông tin và số lượng.
-4. Chọn vị trí lưu trữ và kiểm tra sức chứa.
-5. Xác nhận; hệ thống tạo phiếu nhập, cập nhật tồn/lô/vị trí.
+1. Mở danh sách điều phối nhập TP.
+2. Chọn yêu cầu; hệ thống hiển thị KHSX/lô, Biên bản QC TP và số lượng đạt.
+3. Kiểm tra kho/khu vực/vị trí đã điều phối.
+4. Xác nhận số lượng thực nhập không vượt số đạt QC.
+5. Hệ thống tạo PNK TP, tăng tồn, cập nhật lô và vị trí.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Thông tin sản xuất/thành phẩm hoặc số lượng không hợp lệ → sửa/đối chiếu.
-- E2: Vị trí không phù hợp → chọn vị trí khác.
-- E3: Lỗi tạo phiếu/cập nhật tồn → không ghi nhận nhập kho.
+* E1: Chưa có QC hoặc QC không đạt → không cho nhập vào kho thành phẩm đạt.
+* E2: Số nhập vượt số đạt QC → từ chối.
+* E3: Vị trí không phù hợp/không đủ sức chứa → yêu cầu điều phối lại.
+* E4: Lỗi ghi phiếu/tồn → rollback.
 
 ## UC17 – Nhập kho hàng trả về
 
@@ -1334,23 +1374,21 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC24 |
 | Tên | Lập phiếu yêu cầu nhập kho thành phẩm |
 | Actor | Xưởng sản xuất |
-| Mục tiêu | Tạo yêu cầu nhập thành phẩm sau khi hoàn thành lệnh sản xuất. |
-| Tiền điều kiện | Xưởng có quyền; thông tin lệnh sản xuất đã được ghi nhận. |
-| Hậu điều kiện | Phiếu yêu cầu nhập kho thành phẩm được tạo và gửi Nhân viên kho. |
+| Mục tiêu | Ghi nhận thành phẩm hoàn thành và gửi yêu cầu **QC thành phẩm trước khi nhập kho**. |
+| Tiền điều kiện | Xưởng đã hoàn thành sản xuất theo KHSX/lệnh sản xuất hợp lệ. |
+| Hậu điều kiện | Phiếu yêu cầu nhập TP được lưu “Chờ QC”; chưa làm tăng tồn kho. |
 
 ### Luồng chính
-
-1. Mở chức năng lập yêu cầu nhập thành phẩm.
-2. Chọn lệnh sản xuất đã hoàn thành.
-3. Xem lệnh và lô sản xuất.
-4. Nhập/xác nhận thành phẩm, số lượng, ngày sản xuất và hạn dùng nếu áp dụng.
-5. Xác nhận; hệ thống tạo và gửi phiếu yêu cầu.
+1. Xưởng chọn KHSX/lệnh sản xuất đã hoàn thành.
+2. Hệ thống hiển thị sản phẩm/số lượng kế hoạch.
+3. Xưởng nhập/xác nhận số lượng hoàn thành, mã lô, ngày sản xuất, HSD nếu có.
+4. Hệ thống kiểm tra dữ liệu.
+5. Xác nhận; hệ thống tạo Phiếu yêu cầu nhập TP ở trạng thái “Chờ QC” và chuyển cho Bộ phận QC.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Thành phẩm không quản lý hạn dùng → không bắt buộc hạn dùng.
-- E2: Không có lệnh đủ điều kiện → kết thúc.
-- E3: Thông tin phiếu chưa hợp lệ → bổ sung.
+* E1: KHSX/lệnh chưa hoàn thành → không cho tạo yêu cầu.
+* E2: Số lượng/thông tin lô không hợp lệ → yêu cầu sửa.
+* E3: Trùng yêu cầu cho cùng phần thành phẩm → cảnh báo/ngăn xử lý lặp.
 
 ## UC25 – Quản lý thành phẩm
 
@@ -1384,24 +1422,22 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC26 |
 | Tên | Lập đơn mua nguyên liệu |
 | Actor | Bộ phận mua hàng |
-| Mục tiêu | Lập đơn mua nguyên liệu dựa trên kế hoạch sản xuất đã duyệt và tồn kho. |
-| Tiền điều kiện | Đã đăng nhập. |
-| Hậu điều kiện | Đơn mua được lưu với trạng thái “Chờ phê duyệt”. |
+| Mục tiêu | Lập PO dựa trên **phần nguyên liệu thiếu** do hệ thống tự động xác định sau khi KHSX được duyệt. |
+| Tiền điều kiện | Có KHSX đã duyệt và ít nhất một NL có số lượng thiếu > 0. |
+| Hậu điều kiện | PO được lưu “Chờ phê duyệt”, liên kết KHSX và nhu cầu thiếu. |
 
 ### Luồng chính
-
-1. Chọn kế hoạch sản xuất đã duyệt.
-2. Xem danh sách nguyên liệu cần mua và tồn hiện tại.
-3. Chọn nguyên liệu, nhập số lượng.
-4. Chọn nhà cung cấp, nhập đơn giá dự kiến/thông tin cần thiết.
-5. Kiểm tra, xác nhận và lưu đơn mua “Chờ phê duyệt”.
+1. Mở danh sách nhu cầu mua được hệ thống tạo tự động.
+2. Chọn nhu cầu theo KHSX.
+3. Xem NL, nhu cầu KHSX, tồn khả dụng và số lượng thiếu.
+4. Chọn NCC, nhập/xác nhận số lượng mua, đơn giá dự kiến và thông tin mua.
+5. Hệ thống kiểm tra tính hợp lệ và liên kết nguồn.
+6. Xác nhận; tạo PO “Chờ phê duyệt”.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Số lượng không hợp lệ → nhập lại.
-- E2: Không tìm thấy nhà cung cấp phù hợp → chọn lại.
-- E3: Dữ liệu không hợp lệ → sửa.
-- E4: Lỗi lưu CSDL → không chuyển trạng thái chờ phê duyệt.
+* E1: Số thiếu đã về 0 do tồn thay đổi → cảnh báo và không tạo PO không cần thiết.
+* E2: Thiếu NCC/số lượng không hợp lệ → không lưu.
+* E3: Nhu cầu đã được lập PO đầy đủ → ngăn lập trùng.
 
 ## UC27 – Duyệt đơn mua nguyên liệu
 
@@ -1410,23 +1446,21 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC27 |
 | Tên | Duyệt đơn mua nguyên liệu |
 | Actor | Ban giám đốc |
-| Mục tiêu | Phê duyệt hoặc từ chối đơn mua nguyên liệu. |
-| Tiền điều kiện | Có đơn mua “Chờ phê duyệt”; Ban giám đốc đã đăng nhập. |
-| Hậu điều kiện | Đơn mua chuyển “Đã phê duyệt” hoặc “Từ chối”; kết quả được lưu. |
+| Mục tiêu | Phê duyệt hoặc từ chối PO trước khi Bộ phận mua hàng thực hiện mua. |
+| Tiền điều kiện | PO “Chờ phê duyệt”. |
+| Hậu điều kiện | PO = “Đã phê duyệt” hoặc “Từ chối”; chỉ PO đã duyệt được phép thực hiện mua. |
 
 ### Luồng chính
-
-1. Mở danh sách đơn mua chờ phê duyệt.
-2. Chọn đơn mua và xem chi tiết.
-3. Kiểm tra nguyên liệu, số lượng, nhà cung cấp.
-4. Chọn phê duyệt hoặc từ chối.
-5. Hệ thống cập nhật trạng thái và lưu kết quả.
+1. Mở PO chờ duyệt.
+2. Xem KHSX nguồn, nhu cầu thiếu, NL, số lượng, NCC, giá dự kiến.
+3. Chọn Phê duyệt.
+4. Hệ thống cập nhật “Đã phê duyệt”.
+5. Bộ phận mua hàng sử dụng PO đã duyệt để mua nguyên liệu.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Không có đơn chờ duyệt → kết thúc.
-- E2: Từ chối → nhập lý do rồi xác nhận.
-- E3: Người dùng hủy thao tác → giữ nguyên trạng thái.
+* A1: Từ chối → nhập lý do; PO chuyển “Từ chối”.
+* E1: PO không còn trạng thái chờ duyệt → không xử lý lặp.
+* E2: Dữ liệu nguồn thay đổi nghiêm trọng → yêu cầu đối chiếu trước khi duyệt.
 
 ## UC29 – Kiểm tra chất lượng nguyên liệu
 
@@ -1435,23 +1469,26 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC29 |
 | Tên | Kiểm tra chất lượng nguyên liệu |
 | Actor | Bộ phận QC |
-| Mục tiêu | Kiểm tra chất lượng lô nguyên liệu đã tiếp nhận trước khi nhập kho. |
-| Tiền điều kiện | QC đã đăng nhập; nguyên liệu đã tiếp nhận và đang “Chờ kiểm tra chất lượng”. |
-| Hậu điều kiện | Kết quả QC được lưu; nguyên liệu chuyển “Đạt chất lượng” hoặc “Không đạt chất lượng”. |
+| Mục tiêu | **Trực tiếp tiếp nhận và QC nguyên liệu tại thời điểm NCC giao đến kho**, đối chiếu PO và phân loại số đạt/không đạt. |
+| Tiền điều kiện | Có PO đã được BGĐ duyệt; NCC đưa nguyên liệu thực tế đến khu vực giao nhận của kho. |
+| Hậu điều kiện | Biên bản QC NL được lưu; số đạt chuyển Quản lý kho điều phối nhập; số không đạt trả NCC và không cộng tồn. |
 
 ### Luồng chính
-
-1. Mở danh sách lô chờ QC.
-2. Chọn lô từ phiếu nhận nguyên liệu.
-3. Xem thông tin lô.
-4. Thực hiện kiểm tra và nhập kết quả.
-5. Xác nhận; hệ thống lưu kết quả và cập nhật trạng thái.
+1. NCC đưa xe/hàng nguyên liệu đến kho (hoạt động vật lý ngoài hệ thống).
+2. QC chọn/tra cứu PO đã duyệt tương ứng.
+3. QC đối chiếu NCC, loại NL và số lượng giao với PO.
+4. QC trực tiếp kiểm tra số lượng/chất lượng nguyên liệu.
+5. Nhập tổng giao, số đạt, số không đạt và lý do/kết quả kiểm tra.
+6. Hệ thống kiểm tra số liệu biên bản.
+7. QC xác nhận; hệ thống lập Biên bản QC nguyên liệu.
+8. Số đạt chuyển Quản lý kho để UC13 điều phối nhập.
+9. Số không đạt được ghi nhận trả NCC ngay; không tạo nhập kho cho phần này.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Không đạt → nhập lý do/thông tin liên quan và lưu trạng thái không đạt.
-- E2: Thiếu kết quả → yêu cầu bổ sung.
-- E3: Không thể kiểm tra → ghi nhận nguyên nhân và chuyển “Chờ xử lý”.
+* E1: Không tìm thấy PO đã duyệt/PO không đúng NCC → chưa nhận vào luồng nhập, yêu cầu xác minh.
+* E2: Giao thiếu/thừa so PO → ghi nhận thực giao và sai lệch để đối chiếu; không tự cộng tồn theo PO.
+* E3: Toàn bộ không đạt → biên bản QC ghi 0 đạt; toàn bộ hàng bị trả NCC, không phát sinh điều phối nhập.
+* E4: Chưa thể kết luận → ghi “Chờ xử lý”, chưa cho nhập kho.
 
 ## UC30 – Quản lý lô nguyên liệu
 
@@ -1460,24 +1497,21 @@ Bước 12: đặc tả Use Case
 | Use Case ID | UC30 |
 | Tên | Quản lý lô nguyên liệu |
 | Actor | Bộ phận quản lý kho |
-| Mục tiêu | Thêm, cập nhật, xóa thông tin lô nguyên liệu phục vụ tồn kho và hạn dùng. |
-| Tiền điều kiện | Đăng nhập thành công với vai trò Bộ phận quản lý kho. |
-| Hậu điều kiện | Thông tin lô được thêm/cập nhật/xóa theo thao tác hợp lệ. |
+| Mục tiêu | Quản lý thông tin lô NL phục vụ tồn kho, truy vết và FEFO. |
+| Tiền điều kiện | Đăng nhập với quyền quản lý kho. |
+| Hậu điều kiện | Lô được cập nhật hợp lệ, duy trì liên kết với QC và chứng từ nhập/xuất. |
 
 ### Luồng chính
-
-1. Mở danh sách lô nguyên liệu.
-2. Chọn Thêm/Cập nhật/Xóa.
-3. Nhập/chỉnh sửa mã lô, ngày nhập, hạn sử dụng, số lượng còn lại.
-4. Hệ thống kiểm tra dữ liệu.
-5. Xác nhận; lưu thay đổi và cập nhật danh sách.
+1. Mở danh sách lô NL.
+2. Xem/thêm/cập nhật thông tin theo nghiệp vụ cho phép.
+3. Ghi mã lô, NL, ngày nhập/sản xuất, HSD, trạng thái.
+4. Hệ thống kiểm tra tính hợp lệ/duy nhất và các tham chiếu.
+5. Lưu thay đổi; số lượng còn lại được dẫn xuất/cập nhật từ giao dịch nhập-xuất hợp lệ, không sửa tùy ý.
 
 ### Ngoại lệ / luồng thay thế chính
-
-- E1: Mã lô trùng → nhập mã khác.
-- E2: Thiếu/sai dữ liệu → nhập lại.
-- E3: Hủy thao tác → không lưu thay đổi.
-
+* E1: Mã lô trùng → từ chối.
+* E2: Lô đã phát sinh giao dịch → không cho xóa gây mất truy vết.
+* E3: Dữ liệu ngày/HSD không hợp lệ → yêu cầu sửa.
 
 ---
 
@@ -1497,25 +1531,25 @@ Bước 13: Acceptance Criteria (Tiêu chí chấp nhận) AC
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC02.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Lập kế hoạch sản xuất. |
-| AC02.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Kế hoạch được lưu với trạng thái “Chờ duyệt”. |
-| AC02.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC02. |
+| AC02.1 | Có thể lập KHSX từ đơn hàng hợp lệ và chọn xưởng ngay trong kế hoạch. |
+| AC02.2 | Hệ thống không cho lưu khi xưởng không đáp ứng năng lực/lịch hoặc thiếu dữ liệu bắt buộc. |
+| AC02.3 | KHSX hợp lệ được lưu “Chờ duyệt” với đầy đủ sản phẩm, số lượng, thời gian, xưởng và nhu cầu NL. |
 
 ## AC03 – Duyệt kế hoạch sản xuất
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC03.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Duyệt kế hoạch sản xuất. |
-| AC03.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Kế hoạch chuyển sang “Đã duyệt”, “Yêu cầu điều chỉnh” hoặc “Từ chối”. |
-| AC03.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC03. |
+| AC03.1 | BGĐ có thể Duyệt/Từ chối/Yêu cầu điều chỉnh KHSX “Chờ duyệt”. |
+| AC03.2 | Khi duyệt, KHSX được gửi xưởng và hệ thống tự động đối chiếu nhu cầu NL với tồn khả dụng. |
+| AC03.3 | Chỉ các NL có số thiếu > 0 mới tạo/gửi nhu cầu cho Bộ phận mua hàng; đủ/dư không phát sinh mua. |
 
-## AC04 – Phân công xưởng sản xuất
+## AC04 – Kiểm tra chất lượng thành phẩm
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC04.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Phân công xưởng sản xuất. |
-| AC04.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Thông tin xưởng, sản phẩm, số lượng và thời gian được lưu; xưởng nhận thông tin phân công. |
-| AC04.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC04. |
+| AC04.1 | QC kiểm tra được Phiếu yêu cầu nhập TP ở trạng thái “Chờ QC”. |
+| AC04.2 | Biên bản QC bắt buộc ghi tổng kiểm, số đạt, số không đạt và bảo đảm tổng số lượng khớp. |
+| AC04.3 | Số đạt chuyển điều phối nhập; số không đạt chuyển xử lý hàng lỗi và không được cộng tồn TP đạt. |
 
 ## AC05 – Thống kê báo cáo & Cảnh báo kho
 
@@ -1609,9 +1643,9 @@ Bước 13: Acceptance Criteria (Tiêu chí chấp nhận) AC
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC16.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Nhập kho thành phẩm. |
-| AC16.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Phiếu nhập thành phẩm được tạo; tồn, lô sản xuất và vị trí lưu trữ được cập nhật. |
-| AC16.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC16. |
+| AC16.1 | Chỉ Phiếu yêu cầu nhập TP đã QC đạt và được điều phối mới có thể nhập kho. |
+| AC16.2 | Số lượng nhập không được vượt số lượng đạt trên Biên bản QC TP. |
+| AC16.3 | Nhập thành công phải tạo PNK và cập nhật tồn/lô/vị trí nguyên tử; số không đạt không tăng tồn TP đạt. |
 
 ## AC17 – Nhập kho hàng trả về
 
@@ -1673,9 +1707,9 @@ Bước 13: Acceptance Criteria (Tiêu chí chấp nhận) AC
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC24.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Lập phiếu yêu cầu nhập kho thành phẩm. |
-| AC24.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Phiếu yêu cầu nhập kho thành phẩm được tạo và gửi Nhân viên kho. |
-| AC24.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC24. |
+| AC24.1 | Xưởng chỉ lập yêu cầu cho KHSX/lệnh đã hoàn thành. |
+| AC24.2 | Phiếu yêu cầu lưu đủ sản phẩm, số lượng hoàn thành, lô, ngày sản xuất/HSD nếu có. |
+| AC24.3 | Sau tạo, phiếu ở “Chờ QC” và chưa làm tăng tồn kho. |
 
 ## AC25 – Quản lý thành phẩm
 
@@ -1689,33 +1723,33 @@ Bước 13: Acceptance Criteria (Tiêu chí chấp nhận) AC
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC26.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Lập đơn mua nguyên liệu. |
-| AC26.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Đơn mua được lưu với trạng thái “Chờ phê duyệt”. |
-| AC26.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC26. |
+| AC26.1 | BP mua hàng chỉ lập PO từ nhu cầu thiếu của KHSX đã duyệt. |
+| AC26.2 | Hệ thống hiển thị nhu cầu, tồn khả dụng và số thiếu để tránh mua không cần thiết. |
+| AC26.3 | PO hợp lệ được lưu “Chờ phê duyệt” và truy vết về KHSX/nhu cầu thiếu. |
 
 ## AC27 – Duyệt đơn mua nguyên liệu
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC27.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Duyệt đơn mua nguyên liệu. |
-| AC27.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Đơn mua chuyển “Đã phê duyệt” hoặc “Từ chối”; kết quả được lưu. |
-| AC27.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC27. |
+| AC27.1 | BGĐ xem được PO và nguồn nhu cầu thiếu trước khi duyệt. |
+| AC27.2 | Chỉ PO “Đã phê duyệt” mới được Bộ phận mua thực hiện mua và dùng làm căn cứ QC khi NCC giao. |
+| AC27.3 | Từ chối phải lưu lý do và không cho thực hiện mua theo PO đó. |
 
 ## AC29 – Kiểm tra chất lượng nguyên liệu
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC29.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Kiểm tra chất lượng nguyên liệu. |
-| AC29.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Kết quả QC được lưu; nguyên liệu chuyển “Đạt chất lượng” hoặc “Không đạt chất lượng”. |
-| AC29.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC29. |
+| AC29.1 | QC có thể đối chiếu PO đã duyệt và kiểm tra ngay khi NCC giao nguyên liệu, không cần UC Tiếp nhận riêng. |
+| AC29.2 | Biên bản QC ghi rõ tổng giao, số đạt và số không đạt. |
+| AC29.3 | Chỉ số đạt được chuyển điều phối nhập; số không đạt được ghi nhận trả NCC và không cộng tồn. |
 
 ## AC30 – Quản lý lô nguyên liệu
 
 | Mã | Tiêu chí chấp nhận |
 |---|---|
-| AC30.1 | Actor có quyền và đáp ứng tiền điều kiện có thể truy cập chức năng Quản lý lô nguyên liệu. |
-| AC30.2 | Với dữ liệu hợp lệ, hệ thống hoàn tất luồng chính và đạt hậu điều kiện: Thông tin lô được thêm/cập nhật/xóa theo thao tác hợp lệ. |
-| AC30.3 | Khi dữ liệu/trạng thái không hợp lệ, hệ thống không ghi nhận kết quả sai và xử lý theo ngoại lệ của UC30. |
+| AC30.1 | Lô NL lưu được mã lô, nguyên liệu, ngày nhập/sản xuất, HSD và trạng thái phục vụ truy vết/FEFO. |
+| AC30.2 | Số lượng còn lại của lô không được chỉnh tùy ý mà phải nhất quán với giao dịch nhập/xuất hợp lệ. |
+| AC30.3 | Không thể xóa lô đã phát sinh giao dịch làm mất lịch sử truy vết. |
 
 
 ---
@@ -1724,98 +1758,98 @@ Bước 14: Truy xuất nguồn gốc yêu cầu (RTM)
 
 # 14. Requirement Traceability Matrix (RTM)
 
-| BR | Business Requirement | FR | Use Case | AC |
-|---|---|---|---|---|
-| BR01 | Xác thực và phân quyền | FR01, FR02, FR03 | UC01 – Đăng nhập hệ thống | AC01.1–AC01.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR04, FR05, FR06 | UC02 – Lập kế hoạch sản xuất | AC02.1–AC02.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR07, FR08, FR09 | UC03 – Duyệt kế hoạch sản xuất | AC03.1–AC03.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR10, FR11, FR12 | UC04 – Phân công xưởng sản xuất | AC04.1–AC04.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR31, FR32, FR33 | UC11 – Đặt đơn hàng | AC11.1–AC11.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR64, FR65, FR66 | UC22 – Lập phiếu yêu cầu xuất kho nguyên liệu | AC22.1–AC22.3 |
-| BR02 | Quản lý đơn hàng và kế hoạch sản xuất | FR70, FR71, FR72 | UC24 – Lập phiếu yêu cầu nhập kho thành phẩm | AC24.1–AC24.3 |
-| BR03 | Mua và kiểm tra nguyên liệu | FR76, FR77, FR78 | UC26 – Lập đơn mua nguyên liệu | AC26.1–AC26.3 |
-| BR03 | Mua và kiểm tra nguyên liệu | FR79, FR80, FR81 | UC27 – Duyệt đơn mua nguyên liệu | AC27.1–AC27.3 |
-| BR03 | Mua và kiểm tra nguyên liệu | FR82, FR83, FR84 | UC29 – Kiểm tra chất lượng nguyên liệu | AC29.1–AC29.3 |
-| BR03 | Mua và kiểm tra nguyên liệu | FR61, FR62, FR63 | UC21 – Nhập kho nguyên liệu | AC21.1–AC21.3 |
-| BR04 | Điều phối nhập/xuất kho | FR37, FR38, FR39 | UC13 – Điều phối nhập kho | AC13.1–AC13.3 |
-| BR04 | Điều phối nhập/xuất kho | FR43, FR44, FR45 | UC15 – Điều phối xuất kho | AC15.1–AC15.3 |
-| BR05 | Quản lý nhập kho | FR46, FR47, FR48 | UC16 – Nhập kho thành phẩm | AC16.1–AC16.3 |
-| BR05 | Quản lý nhập kho | FR49, FR50, FR51 | UC17 – Nhập kho hàng trả về | AC17.1–AC17.3 |
-| BR05 | Quản lý nhập kho | FR61, FR62, FR63 | UC21 – Nhập kho nguyên liệu | AC21.1–AC21.3 |
-| BR06 | Quản lý xuất kho | FR34, FR35, FR36 | UC12 – Xuất kho thành phẩm giao hàng | AC12.1–AC12.3 |
-| BR06 | Quản lý xuất kho | FR67, FR68, FR69 | UC23 – Xuất kho nguyên liệu | AC23.1–AC23.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR34, FR35, FR36 | UC12 – Xuất kho thành phẩm giao hàng | AC12.1–AC12.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR43, FR44, FR45 | UC15 – Điều phối xuất kho | AC15.1–AC15.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR58, FR59, FR60 | UC20 – Quản lý lô thành phẩm | AC20.1–AC20.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR67, FR68, FR69 | UC23 – Xuất kho nguyên liệu | AC23.1–AC23.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR70, FR71, FR72 | UC24 – Lập phiếu yêu cầu nhập kho thành phẩm | AC24.1–AC24.3 |
-| BR07 | Quản lý lô và hạn sử dụng | FR85, FR86, FR87 | UC30 – Quản lý lô nguyên liệu | AC30.1–AC30.3 |
-| BR08 | Kiểm kê và điều chỉnh tồn kho | FR19, FR20, FR21 | UC07 – Lập biên bản kiểm kê | AC07.1–AC07.3 |
-| BR08 | Kiểm kê và điều chỉnh tồn kho | FR22, FR23, FR24 | UC08 – Xử lý chênh lệch kiểm kê | AC08.1–AC08.3 |
-| BR08 | Kiểm kê và điều chỉnh tồn kho | FR25, FR26, FR27 | UC09 – Phê duyệt điều chỉnh tồn kho | AC09.1–AC09.3 |
-| BR09 | Quản lý hàng trả về/hàng lỗi | FR40, FR41, FR42 | UC14 – Kiểm tra hàng trả về | AC14.1–AC14.3 |
-| BR09 | Quản lý hàng trả về/hàng lỗi | FR49, FR50, FR51 | UC17 – Nhập kho hàng trả về | AC17.1–AC17.3 |
-| BR09 | Quản lý hàng trả về/hàng lỗi | FR52, FR53, FR54 | UC18 – Xử lý hàng lỗi và hàng trả về | AC18.1–AC18.3 |
-| BR10 | Quản lý danh mục và dữ liệu kho | FR28, FR29, FR30 | UC10 – Quản lý nguyên liệu | AC10.1–AC10.3 |
-| BR10 | Quản lý danh mục và dữ liệu kho | FR55, FR56, FR57 | UC19 – Quản lý dữ liệu kho | AC19.1–AC19.3 |
-| BR10 | Quản lý danh mục và dữ liệu kho | FR58, FR59, FR60 | UC20 – Quản lý lô thành phẩm | AC20.1–AC20.3 |
-| BR10 | Quản lý danh mục và dữ liệu kho | FR73, FR74, FR75 | UC25 – Quản lý thành phẩm | AC25.1–AC25.3 |
-| BR10 | Quản lý danh mục và dữ liệu kho | FR85, FR86, FR87 | UC30 – Quản lý lô nguyên liệu | AC30.1–AC30.3 |
-| BR11 | Tra cứu, báo cáo và cảnh báo | FR13, FR14, FR15 | UC05 – Thống kê báo cáo & Cảnh báo kho | AC05.1–AC05.3 |
-| BR11 | Tra cứu, báo cáo và cảnh báo | FR16, FR17, FR18 | UC06 – Tra cứu dữ liệu kho | AC06.1–AC06.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR19, FR20, FR21 | UC07 – Lập biên bản kiểm kê | AC07.1–AC07.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR22, FR23, FR24 | UC08 – Xử lý chênh lệch kiểm kê | AC08.1–AC08.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR25, FR26, FR27 | UC09 – Phê duyệt điều chỉnh tồn kho | AC09.1–AC09.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR34, FR35, FR36 | UC12 – Xuất kho thành phẩm giao hàng | AC12.1–AC12.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR46, FR47, FR48 | UC16 – Nhập kho thành phẩm | AC16.1–AC16.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR49, FR50, FR51 | UC17 – Nhập kho hàng trả về | AC17.1–AC17.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR61, FR62, FR63 | UC21 – Nhập kho nguyên liệu | AC21.1–AC21.3 |
-| BR12 | Tính toàn vẹn tồn kho và truy vết chứng từ | FR67, FR68, FR69 | UC23 – Xuất kho nguyên liệu | AC23.1–AC23.3 |
+| BR | FR | Use Case | AC |
+|---|---|---|---|
+| BR01 | FR01–FR03 | UC01 – Đăng nhập | AC01.1–AC01.3 |
+| BR02 | FR04–FR06 | UC02 – Lập KHSX + phân công xưởng | AC02.1–AC02.3 |
+| BR03 | FR07–FR09 | UC03 – Duyệt KHSX + đối chiếu NL | AC03.1–AC03.3 |
+| BR04 | FR76–FR81, FR82–FR84 | UC26, UC27, UC29 | AC26, AC27, AC29 |
+| BR05 | FR37–FR45 | UC13, UC15 | AC13, AC15 |
+| BR06 | FR46–FR51, FR61–FR63 | UC16, UC17, UC21 | AC16, AC17, AC21 |
+| BR07 | FR64–FR69 | UC22, UC23 | AC22, AC23 |
+| BR08 | FR70–FR72, FR10–FR12 | UC24, UC04 | AC24, AC04 |
+| BR09 | FR34–FR36 | UC12 | AC12.1–AC12.3 |
+| BR10 | FR40–FR54 | UC14, UC17, UC18 | AC14, AC17, AC18 |
+| BR11 | FR19–FR27 | UC07, UC08, UC09 | AC07, AC08, AC09 |
+| BR12 | FR28–FR30, FR55–FR60, FR73–FR75, FR85–FR87 | UC10, UC19, UC20, UC25, UC30 | AC10, AC19, AC20, AC25, AC30 |
+| BR13 | FR13–FR18 | UC05, UC06 | AC05, AC06 |
+
 
 ---
 
-# Phụ lục A – Danh sách Use Case theo tài liệu nguồn
+# Phụ lục A – Danh sách Use Case sau khi chốt nghiệp vụ
 
-| UC | Tên |
-|---|---|
-| UC01 | Đăng nhập hệ thống |
-| UC02 | Lập kế hoạch sản xuất |
-| UC03 | Duyệt kế hoạch sản xuất |
-| UC04 | Phân công xưởng sản xuất |
-| UC05 | Thống kê báo cáo & Cảnh báo kho |
-| UC06 | Tra cứu dữ liệu kho |
-| UC07 | Lập biên bản kiểm kê |
-| UC08 | Xử lý chênh lệch kiểm kê |
-| UC09 | Phê duyệt điều chỉnh tồn kho |
-| UC10 | Quản lý nguyên liệu |
-| UC11 | Đặt đơn hàng |
-| UC12 | Xuất kho thành phẩm giao hàng |
-| UC13 | Điều phối nhập kho |
-| UC14 | Kiểm tra hàng trả về |
-| UC15 | Điều phối xuất kho |
-| UC16 | Nhập kho thành phẩm |
-| UC17 | Nhập kho hàng trả về |
-| UC18 | Xử lý hàng lỗi và hàng trả về |
-| UC19 | Quản lý dữ liệu kho |
-| UC20 | Quản lý lô thành phẩm |
-| UC21 | Nhập kho nguyên liệu |
-| UC22 | Lập phiếu yêu cầu xuất kho nguyên liệu |
-| UC23 | Xuất kho nguyên liệu |
-| UC24 | Lập phiếu yêu cầu nhập kho thành phẩm |
-| UC25 | Quản lý thành phẩm |
-| UC26 | Lập đơn mua nguyên liệu |
-| UC27 | Duyệt đơn mua nguyên liệu |
-| UC29 | Kiểm tra chất lượng nguyên liệu |
-| UC30 | Quản lý lô nguyên liệu |
-
-> **Ghi chú về UC28:** Không tìm thấy tiêu đề/đặc tả UC28 trong tài liệu nguồn 60 trang. Vì vậy SRS không tự thêm UC28. Khi nhóm bổ sung UC28 vào tài liệu đặc tả, cần cập nhật các mục 7, 11, 12, 13 và 14 tương ứng.
+| UC | Tên | Trạng thái/Ghi chú |
+|---|---|---|
+| UC01 | Đăng nhập hệ thống | Giữ |
+| UC02 | Lập kế hoạch sản xuất | **Bao gồm phân công xưởng** |
+| UC03 | Duyệt kế hoạch sản xuất | Khi duyệt kích hoạt tự động đối chiếu nhu cầu NL |
+| UC04 | Kiểm tra chất lượng thành phẩm | QC sau sản xuất, trước điều phối nhập kho TP |
+| UC05 | Thống kê báo cáo & Cảnh báo kho | Giữ |
+| UC06 | Tra cứu dữ liệu kho | Giữ |
+| UC07 | Lập biên bản kiểm kê | Quy trình định kỳ song song |
+| UC08 | Xử lý chênh lệch kiểm kê | Giữ |
+| UC09 | Phê duyệt điều chỉnh tồn kho | Giữ |
+| UC10 | Quản lý nguyên liệu | Giữ |
+| UC11 | Đặt đơn hàng | Giữ |
+| UC12 | Xuất kho thành phẩm giao hàng | Xuất căn cứ chính theo Đơn hàng |
+| UC13 | Điều phối nhập kho | Áp dụng NL đạt QC, TP đạt QC, hàng trả đạt |
+| UC14 | Kiểm tra hàng trả về | Nhánh sau giao hàng |
+| UC15 | Điều phối xuất kho | NL/TP, FIFO/FEFO |
+| UC16 | Nhập kho thành phẩm | Chỉ TP đạt UC04 |
+| UC17 | Nhập kho hàng trả về | Giữ |
+| UC18 | Xử lý hàng lỗi và hàng trả về | Nhận cả TP không đạt UC04 |
+| UC19 | Quản lý dữ liệu kho | Giữ |
+| UC20 | Quản lý lô thành phẩm | Giữ |
+| UC21 | Nhập kho nguyên liệu | Chỉ số đạt UC29 |
+| UC22 | Lập phiếu yêu cầu xuất kho nguyên liệu | Xưởng không tự lấy NL |
+| UC23 | Xuất kho nguyên liệu | Theo điều phối/FEFO |
+| UC24 | Lập phiếu yêu cầu nhập kho thành phẩm | Sau sản xuất, chuyển “Chờ QC” |
+| UC25 | Quản lý thành phẩm | Giữ |
+| UC26 | Lập đơn mua nguyên liệu | Dựa trên phần thiếu hệ thống tính |
+| UC27 | Duyệt đơn mua nguyên liệu | Giữ |
+| UC29 | Kiểm tra chất lượng nguyên liệu | QC trực tiếp khi NCC giao, không có UC Tiếp nhận |
+| UC30 | Quản lý lô nguyên liệu | Giữ |
 
 # Phụ lục B – Chuỗi chứng từ/nghiệp vụ cốt lõi
 
-- Đơn hàng → Kế hoạch sản xuất → Phê duyệt → Phân công xưởng/Lệnh sản xuất.
-- Kế hoạch sản xuất → Đơn mua nguyên liệu → Phê duyệt → QC nguyên liệu → Phiếu nhập kho nguyên liệu.
-- Lệnh sản xuất → Phiếu yêu cầu xuất kho nguyên liệu → Điều phối xuất → Phiếu xuất kho nguyên liệu.
-- Lệnh sản xuất hoàn thành → Phiếu yêu cầu nhập kho thành phẩm → Điều phối nhập → Phiếu nhập kho thành phẩm.
-- Đơn hàng → Điều phối/xuất thành phẩm → Phiếu xuất kho thành phẩm.
-- Trả hàng → Kiểm tra hàng trả về → Phiếu nhập hàng trả về hoặc xử lý hàng lỗi/trả về.
-- Kiểm kê → Biên bản kiểm kê → Xử lý chênh lệch → Đề nghị điều chỉnh tồn → Phê duyệt → Cập nhật tồn.
+## B.1. Luồng đơn hàng – sản xuất – mua nguyên liệu
+
+Đơn hàng → KHSX (có xưởng) → BGĐ duyệt → hệ thống tự đối chiếu nhu cầu NL/tồn → Nhu cầu mua phần thiếu → Đơn mua NL → BGĐ duyệt → NCC giao hàng → Biên bản QC nguyên liệu.
+
+## B.2. Luồng nhập nguyên liệu
+
+Biên bản QC NL (chỉ số đạt) → Điều phối nhập NL → Phiếu nhập kho NL → cập nhật Tồn + Lô + Vị trí.  
+Phần không đạt → ghi nhận trả NCC → **không phát sinh phiếu nhập/tồn**.
+
+## B.3. Luồng cấp nguyên liệu cho xưởng
+
+KHSX/Lệnh sản xuất → Phiếu yêu cầu xuất NL → Điều phối xuất (FIFO/FEFO) → Phiếu xuất kho NL → trừ Tồn/Lô → Xưởng nhận NL.
+
+## B.4. Luồng thành phẩm
+
+Sản xuất hoàn thành → Phiếu yêu cầu nhập TP → **Biên bản QC thành phẩm (UC04)** → số đạt → Điều phối nhập TP → Phiếu nhập kho TP → tăng Tồn/Lô/Vị trí.  
+Số không đạt → UC18 xử lý hàng lỗi → không cộng tồn TP đạt.
+
+## B.5. Luồng giao hàng
+
+Đến ngày giao của Đơn hàng → Điều phối xuất TP → Phiếu xuất kho TP → trừ Tồn/Lô → Giao khách → cập nhật trạng thái Đơn hàng.
+
+## B.6. Luồng hàng trả về
+
+Khách trả hàng → QC hàng trả → đạt: Điều phối nhập + Phiếu nhập hàng trả → tăng tồn phù hợp; không đạt: UC18 xử lý hàng lỗi/trả về.
+
+## B.7. Luồng kiểm kê song song
+
+Lịch kiểm kê định kỳ/yêu cầu → Biên bản kiểm kê → so tồn hệ thống với thực tế → nếu lệch: Xử lý chênh lệch → Đề nghị điều chỉnh → BGĐ duyệt → cập nhật tồn; nếu không duyệt thì giữ nguyên tồn.
+
+# Phụ lục C – Quyết định nghiệp vụ đã chốt
+
+1. Không có UC “Tiếp nhận giao hàng”; việc NCC đưa hàng đến kho là hoạt động vật lý, QC trực tiếp tiếp nhận/đối chiếu/kiểm tra trong UC29.
+2. Phân công xưởng không còn là UC riêng mà nằm trong UC02 trước khi KHSX được duyệt.
+3. Việc phát hiện thiếu NL là tự động sau khi KHSX được duyệt, không yêu cầu xưởng tự vào kho kiểm tra.
+4. Xưởng không tự lấy NL; phải qua Yêu cầu xuất → Điều phối → Phiếu xuất.
+5. Thành phẩm phải QC bằng UC04 trước khi nhập kho.
+6. Khi giao khách, **Đơn hàng** là chứng từ xuất chính; KHSX dùng để truy vết nguồn sản xuất.
+7. Kiểm kê là quy trình định kỳ song song, không nằm trên đường đi bắt buộc của từng đơn hàng.
+
