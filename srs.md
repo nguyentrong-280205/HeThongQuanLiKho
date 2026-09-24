@@ -1,16 +1,6 @@
 # SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
 ## HỆ THỐNG QUẢN LÝ KHO NHÀ MÁY
 
-> **Nguồn nghiệp vụ:** Tài liệu “Đặc tả UseCase Hệ thống kho Final(1).docx”.  
-> **Mẫu cấu trúc:** `srs.md` của dự án CAB System trong repository `23669941_NguyenDinhTrong_Cabsystem`.  
-> **Phiên bản cập nhật nghiệp vụ:** Tài liệu này đã được đồng bộ theo luồng nghiệp vụ được nhóm chốt sau khi rà soát đặc tả gốc.
->
-> **Các thay đổi nghiệp vụ chính:** (1) phân công xưởng được thực hiện ngay trong UC02 – Lập kế hoạch sản xuất, không còn là Use Case độc lập; (2) **UC04 được sử dụng cho Kiểm tra chất lượng thành phẩm** trước khi điều phối nhập kho thành phẩm; (3) sau khi KHSX được duyệt, hệ thống tự động đối chiếu nhu cầu nguyên liệu với tồn khả dụng và chỉ phát sinh nhu cầu mua phần còn thiếu; (4) không tách UC Tiếp nhận giao hàng – QC nguyên liệu trực tiếp tiếp nhận và kiểm tra khi NCC giao hàng; (5) hàng trả về là nhánh sau giao hàng; (6) kiểm kê là quy trình định kỳ chạy song song với luồng vận hành chính.
->
-> **Ghi chú:** Các phần Business Context, BR, Data Model và NFR được hệ thống hóa từ đặc tả gốc và quyết định nghiệp vụ mới đã chốt.
-
----
-
 Bước 1: xác định ngữ cảnh
 
 # 1. Xác định ngữ cảnh (Business Context)
